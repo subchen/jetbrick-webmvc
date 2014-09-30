@@ -114,7 +114,7 @@ public abstract class UrlSegmentMatcher {
         private static final Pattern PATH_PARAM_PATTERN = Pattern.compile("\\{[^}]+\\}");
 
         public static RegexUrlSegmentMatcher create(String urlSegment) {
-            if (JdkVersion.IS_AT_LEAST_JAVA_7) {
+            if (JdkUtils.IS_AT_LEAST_JAVA_7) {
                 return new Jdk7RegexUrlSegmentMatcher(urlSegment);
             } else {
                 return new Jdk6RegexUrlSegmentMatcher(urlSegment);

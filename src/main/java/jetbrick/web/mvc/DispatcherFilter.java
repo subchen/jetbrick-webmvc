@@ -23,8 +23,8 @@ import java.util.List;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import jetbrick.util.AppVersionUtils;
-import jetbrick.util.JdkVersion;
+import jetbrick.util.VersionUtils;
+import jetbrick.util.JdkUtils;
 import jetbrick.web.mvc.action.HttpMethod;
 import jetbrick.web.mvc.config.WebConfig;
 import jetbrick.web.mvc.config.WebConfigBuilder;
@@ -49,8 +49,8 @@ public final class DispatcherFilter implements Filter {
     @Override
     public void init(FilterConfig fc) throws ServletException {
         log.info("DispatcherFilter starting ...");
-        log.info("java.version = {}", JdkVersion.JAVA_VERSION);
-        log.info("jetbrick.version = {}", AppVersionUtils.getVersion(getClass()));
+        log.info("java.version = {}", JdkUtils.JAVA_VERSION);
+        log.info("jetbrick.version = {}", VersionUtils.getVersion(getClass()));
         log.info("user.dir = {}", System.getProperty("user.dir"));
         log.info("java.io.tmpdir = {}", System.getProperty("java.io.tmpdir"));
         log.info("user.timezone = {}", System.getProperty("user.timezone"));
