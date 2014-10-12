@@ -50,7 +50,7 @@ public final class WebConfigBuilder {
         // get config file
         String configLocation = fc.getInitParameter("configLocation");
         if (StringUtils.isEmpty(configLocation)) {
-            configLocation = "webroot:/WEB-INF/jetbrick-webmvc.properties";
+            configLocation = "/WEB-INF/jetbrick-webmvc.properties";
         }
 
         // load config file

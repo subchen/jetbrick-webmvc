@@ -26,7 +26,7 @@ import jetbrick.ioc.annotation.Config;
 import jetbrick.ioc.annotation.Managed;
 import jetbrick.template.*;
 import jetbrick.template.web.JetWebContext;
-import jetbrick.template.web.JetWebEngineLoader;
+import jetbrick.template.web.JetEngineLoader;
 import jetbrick.web.mvc.RequestContext;
 
 @Managed
@@ -57,25 +57,21 @@ public final class JetxTemplateViewHandler extends AbstractTemplateViewHandler {
     @Override
     protected void doRender(RequestContext ctx, String viewPathName) throws IOException {
         if (engine == null) {
-            if (JetWebEngineLoader.unavailable()) {
-                JetWebEngineLoader.setServletContext(ctx.getServletContext());
+            if (JetEngineLoader.unavailable()) {
+                JetEngineLoader.initialize(ctx.getServletContext());
             }
-            engine = JetWebEngineLoader.getJetEngine();
+            engine = JetEngineLoader.getEngine();
             suffix = engine.getConfig().getTemplateSuffix();
         }
 
         HttpServletResponse response = ctx.getResponse();
         response.setContentType("text/html; charset=" + response.getCharacterEncoding());
 
-        JetContext context = new JetWebContext(ctx.getRequest(), response, ctx.getModel());
+        JetWebContext context = new JetWebContext(ctx.getRequest(), response, ctx.getModel());
         OutputStream out = response.getOutputStream();
 
-        try {
-            JetTemplate template = engine.getTemplate(viewPathName);
-            template.render(context, out);
-        } catch (jetbrick.template.ResourceNotFoundException e) {
-            throw new jetbrick.io.ResourceNotFoundException(viewPathName);
-        }
+        JetTemplate template = engine.getTemplate(viewPathName);
+        template.render(context, out);
 
         out.flush();
     }

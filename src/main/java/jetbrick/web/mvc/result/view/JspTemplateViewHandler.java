@@ -22,7 +22,7 @@ package jetbrick.web.mvc.result.view;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import jetbrick.io.ResourceNotFoundException;
+import jetbrick.io.resource.ResourceNotFoundException;
 import jetbrick.ioc.annotation.Config;
 import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
