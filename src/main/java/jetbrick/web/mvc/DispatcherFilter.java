@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 public final class DispatcherFilter implements Filter {
     private final Logger log = LoggerFactory.getLogger(DispatcherFilter.class);
-    
+
     private WebConfig config;
     private BypassRequestUrls bypassUrls;
     private Router router;
