@@ -24,9 +24,10 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 import jetbrick.ioc.annotation.Config;
 import jetbrick.ioc.annotation.Managed;
-import jetbrick.template.*;
+import jetbrick.template.JetEngine;
+import jetbrick.template.JetTemplate;
 import jetbrick.template.web.JetWebContext;
-import jetbrick.template.web.JetEngineLoader;
+import jetbrick.template.web.JetWebEngine;
 import jetbrick.web.mvc.RequestContext;
 
 @Managed
@@ -57,10 +58,7 @@ public final class JetxTemplateViewHandler extends AbstractTemplateViewHandler {
     @Override
     protected void doRender(RequestContext ctx, String viewPathName) throws IOException {
         if (engine == null) {
-            if (JetEngineLoader.unavailable()) {
-                JetEngineLoader.initialize(ctx.getServletContext());
-            }
-            engine = JetEngineLoader.getEngine();
+            engine = JetWebEngine.create(ctx.getServletContext());
             suffix = engine.getConfig().getTemplateSuffix();
         }
 
