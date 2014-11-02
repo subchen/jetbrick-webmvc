@@ -48,10 +48,6 @@ public class ViewHandlerResolver {
         register(CssDataViewHandler.class);
         register(JsonDataViewHandler.class);
         register(JspTemplateViewHandler.class);
-
-        if (ClassUtils.available("jetbrick.template.JetEngine")) {
-            register(JetxTemplateViewHandler.class);
-        }
     }
 
     public void register(Class<?> viewHandlerClass) {

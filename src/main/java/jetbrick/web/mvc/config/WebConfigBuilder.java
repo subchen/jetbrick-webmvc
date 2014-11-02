@@ -21,11 +21,14 @@ package jetbrick.web.mvc.config;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.io.*;
+import java.net.URL;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import jetbrick.bean.TypeResolverUtils;
 import jetbrick.config.Config;
 import jetbrick.config.ConfigLoader;
+import jetbrick.io.IoUtils;
 import jetbrick.io.finder.ClassFinder;
 import jetbrick.ioc.Ioc;
 import jetbrick.ioc.MutableIoc;
@@ -34,6 +37,7 @@ import jetbrick.ioc.annotation.Managed;
 import jetbrick.ioc.loader.IocAnnotationLoader;
 import jetbrick.ioc.loader.IocPropertiesLoader;
 import jetbrick.util.StringUtils;
+import jetbrick.util.ClassLoaderUtils;
 import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.action.Controller;
@@ -90,7 +94,22 @@ public final class WebConfigBuilder {
         annotationList.add(IocBean.class);
         annotationList.add(Controller.class);
         annotationList.add(Managed.class);
-        return ClassFinder.getClasses(packageNames, true, annotationList, true);
+        Set<Class<?>> classes = ClassFinder.getClasses(packageNames, true, annotationList, true);
+
+        try {
+            Enumeration<URL> files = ClassLoaderUtils.getDefault().getResources("META-INF/jetbrick.properties");
+            while (files.hasMoreElements()) {
+                URL url = files.nextElement();
+                Config config = new ConfigLoader().load(url).asConfig();
+                List<Class> foundClasses = config.asClassList("jetbrick.autoscan.classes");
+                for (Class<?> cls: foundClasses) {
+                    classes.add(cls);
+                }
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        return classes;
     }
 
     private static void registerManagedComponments(Ioc ioc, Collection<Class<?>> klasses) {
