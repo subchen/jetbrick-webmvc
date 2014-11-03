@@ -19,8 +19,7 @@
  */
 package jetbrick.web.mvc.router;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import jetbrick.ioc.annotation.IocInit;
@@ -29,10 +28,11 @@ import jetbrick.web.mvc.BypassRequestUrls;
 
 // 用来过滤静态文件等非 mvc filter 需要处理的文件, 使用正则表达式匹配算法
 public final class RegexBypassRequestUrls implements BypassRequestUrls {
-    public static final String DEFAULT_PATTERNS = "^(.+[.])(jsp|js|css|jpg|png|gif|ico|swf)$, ^(/assets/|/static/).+$";
+    public static final String DEFAULT_PATTERNS = "^(/assets/).+$";
 
     private String patterns = DEFAULT_PATTERNS;
     private List<Pattern> patternList = new ArrayList<Pattern>(8);
+    private Map<String, Boolean> cache;
 
     public void setPatterns(String patterns) {
         this.patterns = patterns;
@@ -40,6 +40,9 @@ public final class RegexBypassRequestUrls implements BypassRequestUrls {
 
     @IocInit
     private void initialize() {
+        cache = new HashMap<String, Boolean>(128);
+        cache.put("/favicon.ico", Boolean.TRUE);
+
         if (patterns != null && patterns.length() > 0) {
             for (String pattern : StringUtils.split(patterns, ',')) {
                 pattern = StringUtils.trimToNull(pattern);
@@ -52,11 +55,19 @@ public final class RegexBypassRequestUrls implements BypassRequestUrls {
 
     @Override
     public boolean accept(HttpServletRequest request, String path) {
+        Boolean found = cache.get(path);
+        if (found != null) {
+            return found == Boolean.TRUE;
+        }
+
         for (Pattern pattern : patternList) {
             if (pattern.matcher(path).matches()) {
+                cache.put(path, Boolean.TRUE); // cache
                 return true;
             }
         }
+
+        cache.put(path, Boolean.FALSE); // cache
         return false;
     }
 }

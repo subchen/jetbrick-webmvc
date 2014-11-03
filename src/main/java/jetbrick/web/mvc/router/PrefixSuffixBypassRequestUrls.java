@@ -19,8 +19,7 @@
  */
 package jetbrick.web.mvc.router;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import jetbrick.ioc.annotation.IocInit;
 import jetbrick.util.StringUtils;
@@ -28,12 +27,12 @@ import jetbrick.web.mvc.BypassRequestUrls;
 
 // 用来过滤静态文件等非 mvc filter 需要处理的文件, 使用前缀/后缀匹配算法
 public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
-    public static final String DEFAULT_PATTERNS = "*.jsp, *.js, *.css, *.jpg, *.png, *.gif, *.ico, *.swf, /assets/*, /static/*";
+    public static final String DEFAULT_PATTERNS = "/assets/*";
 
     private String patterns = DEFAULT_PATTERNS;
     private List<String> prefixList;
     private List<String> suffixList;
-    private List<String> staticList;
+    private Map<String, Boolean> cache;
 
     public void setPatterns(String patterns) {
         this.patterns = patterns;
@@ -41,7 +40,10 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
 
     @IocInit
     private void initialize() {
-        if ((patterns != null) && (patterns.length() > 0)) {
+        cache = new HashMap<String, Boolean>(128);
+        cache.put("/favicon.ico", Boolean.TRUE);
+
+        if (patterns != null && patterns.length() > 0) {
             for (String pattern : StringUtils.split(patterns, ',')) {
                 pattern = StringUtils.trimToNull(pattern);
                 if (pattern != null) {
@@ -56,10 +58,7 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
                         }
                         prefixList.add(pattern.substring(0, pattern.length() - 1));
                     } else {
-                        if (staticList == null) {
-                            staticList = new ArrayList<String>(8);
-                        }
-                        staticList.add(pattern);
+                        cache.put(pattern, Boolean.TRUE);
                     }
                 }
             }
@@ -68,9 +67,15 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
 
     @Override
     public boolean accept(HttpServletRequest request, String path) {
+        Boolean found = cache.get(path);
+        if (found != null) {
+            return found == Boolean.TRUE;
+        }
+
         if (prefixList != null) {
             for (String prefix : prefixList) {
                 if (path.startsWith(prefix)) {
+                    cache.put(path, Boolean.TRUE); // cache
                     return true;
                 }
             }
@@ -79,19 +84,13 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
         if (suffixList != null) {
             for (String suffix : suffixList) {
                 if (path.endsWith(suffix)) {
+                    cache.put(path, Boolean.TRUE); // cache
                     return true;
                 }
             }
         }
 
-        if (staticList != null) {
-            for (String full : staticList) {
-                if (path.equals(full)) {
-                    return true;
-                }
-            }
-        }
-
+        cache.put(path, Boolean.FALSE); // cache
         return false;
     }
 }
