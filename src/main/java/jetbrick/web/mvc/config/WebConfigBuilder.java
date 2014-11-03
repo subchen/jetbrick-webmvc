@@ -45,8 +45,11 @@ import jetbrick.web.mvc.action.annotation.ArgumentGetter;
 import jetbrick.web.mvc.result.ResultHandler;
 import jetbrick.web.mvc.result.view.ViewHandler;
 import jetbrick.web.servlet.ServletUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class WebConfigBuilder {
+    private static final Logger log = LoggerFactory.getLogger(WebConfigBuilder.class);
 
     public static WebConfig build(FilterConfig fc) {
         ServletContext sc = fc.getServletContext();
@@ -100,10 +103,22 @@ public final class WebConfigBuilder {
             Enumeration<URL> files = ClassLoaderUtils.getDefault().getResources("META-INF/jetbrick.properties");
             while (files.hasMoreElements()) {
                 URL url = files.nextElement();
+                log.debug("found config: " + url);
+
                 Config config = new ConfigLoader().load(url).asConfig();
-                List<Class> foundClasses = config.asClassList("jetbrick.autoscan.classes");
-                for (Class<?> cls: foundClasses) {
-                    classes.add(cls);
+
+                //@formatter:off
+                List<String> keys = Arrays.asList(
+                    "jetbrick.webmvc.ViewHandler",
+                    "jetbrick.webmvc.ResultHandler",
+                    "jetbrick.webmvc.ArgumentGetter"
+                );
+                //@formatter:on
+                for (String key: keys) {
+                    List<Class> foundClasses = config.asClassList(key);
+                    for (Class<?> cls: foundClasses) {
+                        classes.add(cls);
+                    }
                 }
             }
         } catch (IOException e) {

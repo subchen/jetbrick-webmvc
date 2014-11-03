@@ -28,11 +28,14 @@ import jetbrick.util.Validate;
 import jetbrick.web.mvc.result.*;
 import com.alibaba.fastjson.JSONAware;
 import com.google.gson.JsonElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 全局 ResultHandler 管理器
  */
-public class ResultHandlerResolver {
+public final class ResultHandlerResolver {
+    private final Logger log = LoggerFactory.getLogger(ResultHandlerResolver.class);
     private final Map<Class<?>, ResultHandler<?>> mapping = new IdentityHashMap<Class<?>, ResultHandler<?>>();
 
     @Inject
@@ -58,6 +61,8 @@ public class ResultHandlerResolver {
 
     public void register(Class<?> resultClass, Class<?> resultHandlerClass) {
         Validate.isAssignableFrom(ResultHandler.class, resultHandlerClass);
+
+        log.info("register ResultHandler: {} -> {}", resultClass.getName(), resultHandlerClass.getName());
 
         ResultHandler<?> resultHandler = (ResultHandler<?>) ioc.newInstance(resultHandlerClass);
         ioc.injectSetters(resultHandler);

@@ -52,7 +52,7 @@ public final class DispatcherFilter implements Filter {
     public void init(FilterConfig fc) throws ServletException {
         log.info("DispatcherFilter starting ...");
         log.info("java.version = {}", JdkUtils.JAVA_VERSION);
-        log.info("jetbrick.version = {}", VersionUtils.getVersion(getClass()));
+        log.info("jetbrick.webmvc.version = {}", VersionUtils.getVersion(getClass()));
         log.info("user.dir = {}", System.getProperty("user.dir"));
         log.info("java.io.tmpdir = {}", System.getProperty("java.io.tmpdir"));
         log.info("user.timezone = {}", System.getProperty("user.timezone"));

@@ -26,11 +26,14 @@ import jetbrick.ioc.annotation.Inject;
 import jetbrick.ioc.annotation.IocInit;
 import jetbrick.util.*;
 import jetbrick.web.mvc.result.view.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 全局 ViewHandler 管理器
  */
-public class ViewHandlerResolver {
+public final class ViewHandlerResolver {
+    private final Logger log = LoggerFactory.getLogger(ViewHandlerResolver.class);
     private final Map<String, ViewHandler> mapping = new HashMap<String, ViewHandler>();
 
     @Inject
@@ -58,10 +61,14 @@ public class ViewHandlerResolver {
         ioc.initialize(viewHandler);
         mapping.put(viewHandler.getType(), viewHandler);
 
+        log.info("register ViewHandler: {} -> {}", viewHandler.getType(), viewHandlerClass.getName());
+
         String suffix = viewHandler.getSuffix();
         if (suffix != null) {
             suffix = StringUtils.removeStart(suffix, ".");
-            mapping.put(suffix, viewHandler);
+            if (mapping.put(suffix, viewHandler) == null) {
+                log.info("register ViewHandler: {} -> {}", suffix, viewHandlerClass.getName());
+            }
         }
     }
 

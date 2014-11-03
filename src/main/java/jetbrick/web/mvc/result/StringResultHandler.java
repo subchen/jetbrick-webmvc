@@ -34,14 +34,6 @@ public final class StringResultHandler implements ResultHandler<String> {
 
     private ViewHandler defaultViewHandler;
 
-    @IocInit
-    private void initialize() {
-        defaultViewHandler = viewHandlerResolver.lookup(defaultViewType);
-        if (defaultViewHandler == null) {
-            throw new IllegalStateException("Cannot find the default view resolver: " + defaultViewType);
-        }
-    }
-
     @Override
     public void handle(RequestContext ctx, String result) throws Exception {
         ViewHandler viewHandler = null;
@@ -78,6 +70,12 @@ public final class StringResultHandler implements ResultHandler<String> {
 
         if (viewHandler == null) {
             // 使用默认配置 view
+            if (defaultViewHandler == null) {
+                defaultViewHandler = viewHandlerResolver.lookup(defaultViewType);
+                if (defaultViewHandler == null) {
+                    throw new IllegalStateException("Cannot find the default view resolver: " + defaultViewType);
+                }
+            }
             viewHandler = defaultViewHandler;
         }
 
