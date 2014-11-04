@@ -105,6 +105,7 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
                     if (cache != null) {
                         cache.put(path, Boolean.TRUE);
                     }
+                    return true;
                 }
             }
         }
