@@ -30,18 +30,25 @@ import jetbrick.web.mvc.BypassRequestUrls;
 public final class RegexBypassRequestUrls implements BypassRequestUrls {
     public static final String DEFAULT_PATTERNS = "^(/assets/).+$";
 
+    private final List<Pattern> patternList = new ArrayList<Pattern>(8);
     private String patterns = DEFAULT_PATTERNS;
-    private List<Pattern> patternList = new ArrayList<Pattern>(8);
     private Map<String, Boolean> cache;
 
     public void setPatterns(String patterns) {
         this.patterns = patterns;
     }
 
+    public void setCache(boolean enabled) {
+        if (enabled) {
+            cache = new HashMap<String, Boolean>(128);
+        }
+    }
+
     @IocInit
     private void initialize() {
-        cache = new HashMap<String, Boolean>(128);
-        cache.put("/favicon.ico", Boolean.TRUE);
+        if (cache != null) {
+            cache.put("/favicon.ico", Boolean.TRUE);
+        }
 
         if (patterns != null && patterns.length() > 0) {
             for (String pattern : StringUtils.split(patterns, ',')) {
@@ -55,19 +62,30 @@ public final class RegexBypassRequestUrls implements BypassRequestUrls {
 
     @Override
     public boolean accept(HttpServletRequest request, String path) {
-        Boolean found = cache.get(path);
-        if (found != null) {
-            return found == Boolean.TRUE;
-        }
-
-        for (Pattern pattern : patternList) {
-            if (pattern.matcher(path).matches()) {
-                cache.put(path, Boolean.TRUE); // cache
+        if (cache != null) {
+            Boolean found = cache.get(path);
+            if (found != null) {
+                return found == Boolean.TRUE;
+            }
+        } else {
+            // special code for no-cache
+            if ("/favicon.ico".equals(path)) {
                 return true;
             }
         }
 
-        cache.put(path, Boolean.FALSE); // cache
+        for (Pattern pattern : patternList) {
+            if (pattern.matcher(path).matches()) {
+                if (cache != null) {
+                    cache.put(path, Boolean.TRUE);
+                }
+                return true;
+            }
+        }
+
+        if (cache != null) {
+            cache.put(path, Boolean.FALSE);
+        }
         return false;
     }
 }

@@ -30,6 +30,7 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
     public static final String DEFAULT_PATTERNS = "/assets/*";
 
     private String patterns = DEFAULT_PATTERNS;
+    private Set<String> staticList;
     private List<String> prefixList;
     private List<String> suffixList;
     private Map<String, Boolean> cache;
@@ -38,10 +39,16 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
         this.patterns = patterns;
     }
 
+    public void setCache(boolean enabled) {
+        if (enabled) {
+            cache = new HashMap<String, Boolean>(128);
+        }
+    }
+
     @IocInit
     private void initialize() {
-        cache = new HashMap<String, Boolean>(128);
-        cache.put("/favicon.ico", Boolean.TRUE);
+        staticList = new HashSet<String>(8);
+        staticList.add("/favicon.ico");
 
         if (patterns != null && patterns.length() > 0) {
             for (String pattern : StringUtils.split(patterns, ',')) {
@@ -58,7 +65,7 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
                         }
                         prefixList.add(pattern.substring(0, pattern.length() - 1));
                     } else {
-                        cache.put(pattern, Boolean.TRUE);
+                        staticList.add(pattern);
                     }
                 }
             }
@@ -67,15 +74,26 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
 
     @Override
     public boolean accept(HttpServletRequest request, String path) {
-        Boolean found = cache.get(path);
-        if (found != null) {
-            return found == Boolean.TRUE;
+        if (cache != null) {
+            Boolean found = cache.get(path);
+            if (found != null) {
+                return found == Boolean.TRUE;
+            }
+        }
+
+        if (staticList.contains(path)) {
+            if (cache != null) {
+                cache.put(path, Boolean.TRUE);
+            }
+            return true;
         }
 
         if (prefixList != null) {
             for (String prefix : prefixList) {
                 if (path.startsWith(prefix)) {
-                    cache.put(path, Boolean.TRUE); // cache
+                    if (cache != null) {
+                        cache.put(path, Boolean.TRUE);
+                    }
                     return true;
                 }
             }
@@ -84,13 +102,16 @@ public final class PrefixSuffixBypassRequestUrls implements BypassRequestUrls {
         if (suffixList != null) {
             for (String suffix : suffixList) {
                 if (path.endsWith(suffix)) {
-                    cache.put(path, Boolean.TRUE); // cache
-                    return true;
+                    if (cache != null) {
+                        cache.put(path, Boolean.TRUE);
+                    }
                 }
             }
         }
 
-        cache.put(path, Boolean.FALSE); // cache
+        if (cache != null) {
+            cache.put(path, Boolean.FALSE);
+        }
         return false;
     }
 }
