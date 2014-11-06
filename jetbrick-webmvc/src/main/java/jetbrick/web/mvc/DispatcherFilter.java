@@ -24,13 +24,15 @@ import java.util.List;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import jetbrick.util.VersionUtils;
 import jetbrick.util.JdkUtils;
+import jetbrick.util.VersionUtils;
 import jetbrick.web.mvc.action.HttpMethod;
 import jetbrick.web.mvc.config.WebConfig;
 import jetbrick.web.mvc.config.WebConfigBuilder;
 import jetbrick.web.mvc.interceptor.Interceptor;
 import jetbrick.web.mvc.interceptor.InterceptorChainImpl;
+import jetbrick.web.mvc.multipart.FileUpload;
+import jetbrick.web.mvc.multipart.MultipartRequest;
 import jetbrick.web.mvc.plugin.Plugin;
 import jetbrick.web.mvc.result.ResultHandler;
 import jetbrick.web.servlet.RequestUtils;
@@ -44,6 +46,7 @@ public final class DispatcherFilter implements Filter {
     private WebConfig config;
     private BypassRequestUrls bypassUrls;
     private Router router;
+    private FileUpload fileUpload;
     private ResultHandlerResolver resultHandlerResolver;
     private ExceptionHandler exceptionHandler;
     private String encoding;
@@ -67,6 +70,7 @@ public final class DispatcherFilter implements Filter {
             router = config.getRouter();
             resultHandlerResolver = config.getResultHandlerResolver();
             exceptionHandler = config.getExceptionHandler();
+            fileUpload = config.getFileUpload();
 
             log.info("router = {}", router.getClass().getName());
             log.info("exception.handler = {}", (exceptionHandler == null) ? null : exceptionHandler.getClass().getName());
@@ -133,6 +137,11 @@ public final class DispatcherFilter implements Filter {
         try {
             HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
             RouteInfo route = router.lookup(request, path, httpMethod);
+
+            MultipartRequest multipartRequest = fileUpload.transform(request);
+            if (multipartRequest != null) {
+                request = multipartRequest;
+            }
             ctx = new RequestContext(request, response, path, httpMethod, route);
 
             List<Interceptor> interceptors = config.getInterceptors();

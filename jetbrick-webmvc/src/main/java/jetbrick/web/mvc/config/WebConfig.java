@@ -29,6 +29,7 @@ import jetbrick.util.Validate;
 import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.interceptor.Interceptor;
+import jetbrick.web.mvc.multipart.FileUpload;
 import jetbrick.web.mvc.plugin.Plugin;
 
 // 单例模式，启动的时候自动初始化，由 IoC 容器进行管理.
@@ -74,6 +75,9 @@ public final class WebConfig {
 
     @Config(value = "web.exception.handler", required = false)
     private ExceptionHandler exceptionHandler;
+
+    @Inject
+    private FileUpload fileUpload;
 
     @Inject
     private ResultHandlerResolver resultHandlerResolver;
@@ -128,6 +132,10 @@ public final class WebConfig {
 
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
+    }
+
+    public FileUpload getFileUpload() {
+        return fileUpload;
     }
 
     public ResultHandlerResolver getResultHandlerResolver() {

@@ -27,7 +27,8 @@ import jetbrick.bean.MethodInfo;
 import jetbrick.ioc.Ioc;
 import jetbrick.web.mvc.action.HttpMethod;
 import jetbrick.web.mvc.config.WebConfig;
-import jetbrick.web.mvc.multipart.*;
+import jetbrick.web.mvc.multipart.FilePart;
+import jetbrick.web.mvc.multipart.MultipartRequest;
 import jetbrick.web.mvc.result.ResultHandler;
 import jetbrick.web.servlet.RequestIntrospectUtils;
 
@@ -40,7 +41,7 @@ public class RequestContext {
     private final RouteInfo routeInfo;
 
     protected RequestContext(HttpServletRequest request, HttpServletResponse response, String pathInfo, HttpMethod httpMethod, RouteInfo routeInfo) {
-        this.request = FileUploaderUtils.asRequest(request); // support multipart request
+        this.request = request;
         this.response = response;
         this.pathInfo = pathInfo;
         this.httpMethod = httpMethod;

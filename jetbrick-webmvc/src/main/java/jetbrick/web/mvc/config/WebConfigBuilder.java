@@ -19,16 +19,15 @@
  */
 package jetbrick.web.mvc.config;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.*;
-import java.io.*;
 import java.net.URL;
+import java.util.*;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import jetbrick.bean.TypeResolverUtils;
 import jetbrick.config.Config;
 import jetbrick.config.ConfigLoader;
-import jetbrick.io.IoUtils;
 import jetbrick.io.finder.ClassFinder;
 import jetbrick.ioc.Ioc;
 import jetbrick.ioc.MutableIoc;
@@ -36,12 +35,14 @@ import jetbrick.ioc.annotation.IocBean;
 import jetbrick.ioc.annotation.Managed;
 import jetbrick.ioc.loader.IocAnnotationLoader;
 import jetbrick.ioc.loader.IocPropertiesLoader;
-import jetbrick.util.StringUtils;
 import jetbrick.util.ClassLoaderUtils;
+import jetbrick.util.StringUtils;
 import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.action.Controller;
 import jetbrick.web.mvc.action.annotation.ArgumentGetter;
+import jetbrick.web.mvc.multipart.DelegatedFileUpload;
+import jetbrick.web.mvc.multipart.FileUpload;
 import jetbrick.web.mvc.result.ResultHandler;
 import jetbrick.web.mvc.result.view.ViewHandler;
 import jetbrick.web.servlet.ServletUtils;
@@ -74,8 +75,9 @@ public final class WebConfigBuilder {
         // create ioc container
         MutableIoc ioc = new MutableIoc();
         ioc.addBean(Ioc.class.getName(), ioc);
-        ioc.addBean(ServletContext.class.getName(), sc);
+        ioc.addBean(ServletContext.class, sc);
         ioc.addBean(WebConfig.class);
+        ioc.addBean(FileUpload.class, DelegatedFileUpload.class);
         ioc.addBean(ResultHandlerResolver.class);
         ioc.addBean(ViewHandlerResolver.class);
         ioc.addBean(ArgumentGetterResolver.class);
@@ -114,9 +116,10 @@ public final class WebConfigBuilder {
                     "jetbrick.webmvc.ArgumentGetter"
                 );
                 //@formatter:on
-                for (String key: keys) {
+                for (String key : keys) {
+                    @SuppressWarnings("rawtypes")
                     List<Class> foundClasses = config.asClassList(key);
-                    for (Class<?> cls: foundClasses) {
+                    for (Class<?> cls : foundClasses) {
                         classes.add(cls);
                     }
                 }
