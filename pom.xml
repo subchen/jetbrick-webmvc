@@ -19,12 +19,9 @@
 
     <modules>
         <module>jetbrick-webmvc</module>
+        <module>jetbrick-webmvc-fileupload</module>
         <module>jetbrick-webmvc-fastjson</module>
         <module>jetbrick-webmvc-gson</module>
-        <module>jetbrick-webmvc-dom4j</module>
-        <module>jetbrick-webmvc-fileupload</module>
-        <module>jetbrick-webmvc-cosupload</module>
-        <module>jetbrick-webmvc-smartupload</module>
     </modules>
 
     <scm>
