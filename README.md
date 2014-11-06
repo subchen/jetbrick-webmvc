@@ -1,5 +1,5 @@
 [![QQ Group](http://img.shields.io/badge/QQ-310491655-blue.svg)](http://shang.qq.com/wpa/qunwpa?idkey=c81a8f922d2b00422761558c4c547a4c4af778edcb0a70c99aadf9e33d80cb11)
-[![Maven](http://img.shields.io/badge/jetbrick--ioc-v2.0-brightgreen.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jetbrick-webmvc%22)
+[![Maven](http://img.shields.io/badge/jetbrick--webmvc-v2.0-brightgreen.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jetbrick-webmvc%22)
 [![JDK](http://img.shields.io/badge/JDK-v6.0+-yellow.svg)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 [![License](http://img.shields.io/badge/License-Apache_2-red.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -63,7 +63,7 @@ Downloads
     - [jetbrick-webmvc-gson-2.0-sources.jar][16]
 * Dependencies
     - [jetbrick-commons-2.0.1.jar][21]
-    - [jetbrick-commons-2.0.jar][22]
+    - [jetbrick-ioc-2.0.jar][22]
     - [slf4j-api-1.7.7.jar][23]
     - [javax.servlet-api-3.0.1.jar][24] (optional)
 
