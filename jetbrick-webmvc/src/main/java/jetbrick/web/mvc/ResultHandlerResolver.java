@@ -23,11 +23,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import jetbrick.ioc.Ioc;
 import jetbrick.ioc.annotation.*;
-import jetbrick.util.ClassUtils;
 import jetbrick.util.Validate;
 import jetbrick.web.mvc.result.*;
-import com.alibaba.fastjson.JSONAware;
-import com.google.gson.JsonElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,13 +47,6 @@ public final class ResultHandlerResolver {
         register(RawText.class, RawTextResultHandler.class);
         register(RawData.class, RawDataResultHandler.class);
         register(RawDownload.class, RawDownloadResultHandler.class);
-
-        if (ClassUtils.available("com.alibaba.fastjson.JSONAware")) {
-            register(JSONAware.class, FastjsonResultHandler.class);
-        }
-        if (ClassUtils.available("com.google.gson.JsonElement")) {
-            register(JsonElement.class, GsonResultHandler.class);
-        }
     }
 
     public void register(Class<?> resultClass, Class<?> resultHandlerClass) {
