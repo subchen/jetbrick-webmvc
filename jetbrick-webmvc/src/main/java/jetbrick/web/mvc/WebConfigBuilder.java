@@ -73,7 +73,7 @@ public final class WebConfigBuilder {
         ioc.addBean(Ioc.class.getName(), ioc);
         ioc.addBean(ServletContext.class, sc);
         ioc.addBean(WebConfig.class);
-        ioc.addBean(FileUpload.class, DelegatedFileUpload.class);
+        ioc.addBean(DelegatedFileUpload.class);
         ioc.addBean(ResultHandlerResolver.class);
         ioc.addBean(ViewHandlerResolver.class);
         ioc.addBean(ArgumentGetterResolver.class);
@@ -94,6 +94,7 @@ public final class WebConfigBuilder {
         ResultHandlerResolver resultHandlerResolver = ioc.getBean(ResultHandlerResolver.class);
         ViewHandlerResolver viewHandlerResolver = ioc.getBean(ViewHandlerResolver.class);
         ArgumentGetterResolver argumentGetterResolver = ioc.getBean(ArgumentGetterResolver.class);
+        DelegatedFileUpload fileUpload = ioc.getBean(DelegatedFileUpload.class);
 
         for (Class<?> cls : classes) {
             if (ResultHandler.class.isAssignableFrom(cls)) {
@@ -118,6 +119,8 @@ public final class WebConfigBuilder {
                         argumentGetterResolver.register(type, cls);
                     }
                 }
+            } else if (FileUpload.class.isAssignableFrom(cls)) {
+                fileUpload.register(cls);
             } else {
                 throw new IllegalStateException("@Managed annotation is illegal in class: " + cls.getName());
             }

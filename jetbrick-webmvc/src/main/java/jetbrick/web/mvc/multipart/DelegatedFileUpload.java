@@ -25,6 +25,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import jetbrick.ioc.Ioc;
 import jetbrick.ioc.annotation.Inject;
+import jetbrick.ioc.annotation.IocInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,8 @@ public final class DelegatedFileUpload implements FileUpload {
     @Inject
     private Ioc ioc;
 
-    public DelegatedFileUpload() {
+    @IocInit
+    public void initialize() {
         register(HTML5FileUpload.class);
     }
 

@@ -28,6 +28,7 @@ import jetbrick.ioc.annotation.Inject;
 import jetbrick.util.Validate;
 import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.interceptor.Interceptor;
+import jetbrick.web.mvc.multipart.DelegatedFileUpload;
 import jetbrick.web.mvc.multipart.FileUpload;
 import jetbrick.web.mvc.plugin.Plugin;
 
@@ -76,7 +77,7 @@ public final class WebConfig {
     private ExceptionHandler exceptionHandler;
 
     @Inject
-    private FileUpload fileUpload;
+    private DelegatedFileUpload fileUpload;
 
     @Inject
     private ResultHandlerResolver resultHandlerResolver;
