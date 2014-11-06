@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.github.subchen</groupId>
+        <artifactId>jetbrick-parent</artifactId>
+        <version>2.4</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jetbrick-webmvc-parent</artifactId>
+    <version>2.0</version>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Web MVC framework for jetbrick</description>
+    <url>http://subchen.github.io/jetbrick-webmvc</url>
+
+    <modules>
+        <module>jetbrick-webmvc</module>
+        <module>jetbrick-webmvc-fastjson</module>
+        <module>jetbrick-webmvc-gson</module>
+        <module>jetbrick-webmvc-dom4j</module>
+        <module>jetbrick-webmvc-fileupload</module>
+        <module>jetbrick-webmvc-cosupload</module>
+        <module>jetbrick-webmvc-smartupload</module>
+    </modules>
+
+    <scm>
+        <url>https://github.com/subchen/jetbrick-webmvc.git</url>
+        <connection>scm:git:https://github.com/subchen/jetbrick-webmvc.git</connection>
+        <developerConnection>scm:git:git://github.com/subchen/jetbrick-webmvc.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>github issue</system>
+        <url>https://github.com/subchen/jetbrick-webmvc/issues</url>
+    </issueManagement>
+
+</project>
