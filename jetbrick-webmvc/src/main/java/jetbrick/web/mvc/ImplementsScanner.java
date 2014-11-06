@@ -71,8 +71,9 @@ public final class ImplementsScanner {
         Set<Class<?>> classes = ClassFinder.getClasses(packageNames, true, annotations, true);
         for (Class<?> cls : classes) {
             for (Annotation annotation : cls.getAnnotations()) {
-                if (annotations.contains(annotation)) {
-                    addImplementClass(annotation.getClass().getName(), cls);
+                Class<? extends Annotation> annotationType = annotation.annotationType();
+                if (annotations.contains(annotationType)) {
+                    addImplementClass(annotationType.getName(), cls);
                 }
             }
         }
