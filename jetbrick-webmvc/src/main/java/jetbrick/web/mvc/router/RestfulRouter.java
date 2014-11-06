@@ -26,7 +26,6 @@ import jetbrick.util.*;
 import jetbrick.util.annotation.ValueConstants;
 import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.action.*;
-import jetbrick.web.mvc.config.WebConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

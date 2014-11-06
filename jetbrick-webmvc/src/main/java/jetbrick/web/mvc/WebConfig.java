@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jetbrick.web.mvc.config;
+package jetbrick.web.mvc;
 
 import java.io.File;
 import java.util.List;
@@ -26,7 +26,6 @@ import jetbrick.ioc.Ioc;
 import jetbrick.ioc.annotation.Config;
 import jetbrick.ioc.annotation.Inject;
 import jetbrick.util.Validate;
-import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.interceptor.Interceptor;
 import jetbrick.web.mvc.multipart.FileUpload;

@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import jetbrick.util.JdkUtils;
 import jetbrick.util.VersionUtils;
 import jetbrick.web.mvc.action.HttpMethod;
-import jetbrick.web.mvc.config.WebConfig;
-import jetbrick.web.mvc.config.WebConfigBuilder;
 import jetbrick.web.mvc.interceptor.Interceptor;
 import jetbrick.web.mvc.interceptor.InterceptorChainImpl;
 import jetbrick.web.mvc.multipart.FileUpload;

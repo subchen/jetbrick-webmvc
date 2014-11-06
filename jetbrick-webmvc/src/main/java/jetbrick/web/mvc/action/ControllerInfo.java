@@ -20,7 +20,7 @@
 package jetbrick.web.mvc.action;
 
 import jetbrick.ioc.object.*;
-import jetbrick.web.mvc.config.WebConfig;
+import jetbrick.web.mvc.WebConfig;
 
 public final class ControllerInfo {
     private final Class<?> type;

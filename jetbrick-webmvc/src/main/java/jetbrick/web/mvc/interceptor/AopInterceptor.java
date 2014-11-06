@@ -20,7 +20,7 @@
 package jetbrick.web.mvc.interceptor;
 
 import jetbrick.web.mvc.RequestContext;
-import jetbrick.web.mvc.config.WebConfig;
+import jetbrick.web.mvc.WebConfig;
 
 /**
  * 实现类似于 AOP 风格的 Interceptor.

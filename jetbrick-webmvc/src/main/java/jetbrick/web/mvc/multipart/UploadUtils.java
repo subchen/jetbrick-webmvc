@@ -21,7 +21,7 @@ package jetbrick.web.mvc.multipart;
 
 import java.io.File;
 import jetbrick.util.*;
-import jetbrick.web.mvc.config.WebConfig;
+import jetbrick.web.mvc.WebConfig;
 
 public final class UploadUtils {
 
