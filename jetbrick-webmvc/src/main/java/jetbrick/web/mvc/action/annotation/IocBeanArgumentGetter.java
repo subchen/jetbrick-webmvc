@@ -21,7 +21,8 @@ package jetbrick.web.mvc.action.annotation;
 
 import java.lang.annotation.Annotation;
 import jetbrick.ioc.Ioc;
-import jetbrick.ioc.annotation.*;
+import jetbrick.ioc.annotation.Inject;
+import jetbrick.ioc.annotation.InjectParameterWith;
 import jetbrick.ioc.injector.ParameterInjector;
 import jetbrick.ioc.injector.ParameterInjector.ParameterContext;
 import jetbrick.util.ExceptionUtils;
@@ -33,7 +34,7 @@ import jetbrick.web.mvc.RequestContext;
  *
  * @author Guoqiang Chen
  */
-@Managed
+
 public final class IocBeanArgumentGetter implements AnnotatedArgumentGetter<Annotation, Object> {
     @Inject
     private Ioc ioc;

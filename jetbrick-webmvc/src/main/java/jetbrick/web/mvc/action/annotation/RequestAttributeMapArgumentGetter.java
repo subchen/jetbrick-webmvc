@@ -19,11 +19,9 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.servlet.map.RequestAttributeMap;
 
-@Managed
 public final class RequestAttributeMapArgumentGetter implements TypedArgumentGetter<RequestAttributeMap> {
 
     @Override

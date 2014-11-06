@@ -19,11 +19,9 @@
  */
 package jetbrick.web.mvc.result;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.mvc.ResultHandlerResolver;
 
-@Managed
 public final class ObjectResultHandler implements ResultHandler<Object> {
     // 没有直接注入，否则会产生循环注入失败
     private ResultHandlerResolver resolver;

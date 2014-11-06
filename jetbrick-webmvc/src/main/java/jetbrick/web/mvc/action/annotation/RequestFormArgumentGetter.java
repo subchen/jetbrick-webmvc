@@ -20,11 +20,9 @@
 package jetbrick.web.mvc.action.annotation;
 
 import jetbrick.bean.KlassInfo;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.util.ExceptionUtils;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class RequestFormArgumentGetter implements AnnotatedArgumentGetter<RequestForm, Object> {
     private KlassInfo klass;
 

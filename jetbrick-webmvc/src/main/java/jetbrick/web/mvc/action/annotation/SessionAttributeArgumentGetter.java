@@ -19,11 +19,9 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.util.annotation.ValueConstants;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class SessionAttributeArgumentGetter implements AnnotatedArgumentGetter<SessionAttribute, Object> {
     private String name;
     private boolean required;

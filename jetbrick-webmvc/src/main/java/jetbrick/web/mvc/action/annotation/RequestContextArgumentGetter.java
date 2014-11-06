@@ -19,10 +19,8 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class RequestContextArgumentGetter implements TypedArgumentGetter<RequestContext> {
 
     @Override

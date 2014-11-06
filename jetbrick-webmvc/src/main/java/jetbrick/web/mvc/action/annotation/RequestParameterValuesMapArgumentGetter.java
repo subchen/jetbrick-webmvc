@@ -19,11 +19,9 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.servlet.map.RequestParameterValuesMap;
 
-@Managed
 public final class RequestParameterValuesMapArgumentGetter implements TypedArgumentGetter<RequestParameterValuesMap> {
 
     @Override

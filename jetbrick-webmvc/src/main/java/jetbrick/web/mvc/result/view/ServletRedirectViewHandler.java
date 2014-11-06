@@ -20,11 +20,9 @@
 package jetbrick.web.mvc.result.view;
 
 import java.io.IOException;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.util.PathUtils;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class ServletRedirectViewHandler implements ViewHandler {
     @Override
     public String getType() {

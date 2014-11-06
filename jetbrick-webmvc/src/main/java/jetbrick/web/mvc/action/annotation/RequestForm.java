@@ -20,7 +20,7 @@
 package jetbrick.web.mvc.action.annotation;
 
 import java.lang.annotation.*;
-import jetbrick.ioc.annotation.ManagedWith;
+import jetbrick.web.mvc.ManagedWith;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

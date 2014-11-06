@@ -20,9 +20,7 @@
 package jetbrick.web.mvc.result.view;
 
 import javax.servlet.http.HttpServletRequest;
-import jetbrick.ioc.annotation.Managed;
 
-@Managed
 public final class CssDataViewHandler extends AbstractDataViewHandler {
 
     @Override

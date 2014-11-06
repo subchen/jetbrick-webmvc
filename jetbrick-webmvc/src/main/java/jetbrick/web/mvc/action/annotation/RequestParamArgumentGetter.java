@@ -19,7 +19,6 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.typecast.Convertor;
 import jetbrick.typecast.TypeCastUtils;
 import jetbrick.util.ArrayUtils;
@@ -28,7 +27,6 @@ import jetbrick.util.annotation.ValueConstants;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.mvc.multipart.FilePart;
 
-@Managed
 public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter<RequestParam, Object> {
     // 区分不同的场景
     private static final int SCENARIO_FILE = 1;

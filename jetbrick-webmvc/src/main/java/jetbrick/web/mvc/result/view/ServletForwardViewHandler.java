@@ -21,11 +21,9 @@ package jetbrick.web.mvc.result.view;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.util.PathUtils;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class ServletForwardViewHandler implements ViewHandler {
     @Override
     public String getType() {

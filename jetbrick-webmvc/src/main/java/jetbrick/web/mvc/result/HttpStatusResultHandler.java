@@ -20,11 +20,9 @@
 package jetbrick.web.mvc.result;
 
 import java.io.IOException;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.mvc.WebException;
 
-@Managed
 public final class HttpStatusResultHandler implements ResultHandler<HttpStatus> {
 
     @Override

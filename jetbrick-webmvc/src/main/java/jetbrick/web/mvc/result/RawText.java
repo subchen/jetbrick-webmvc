@@ -19,7 +19,7 @@
  */
 package jetbrick.web.mvc.result;
 
-import jetbrick.ioc.annotation.ManagedWith;
+import jetbrick.web.mvc.ManagedWith;
 import jetbrick.web.mvc.RequestContext;
 
 /**

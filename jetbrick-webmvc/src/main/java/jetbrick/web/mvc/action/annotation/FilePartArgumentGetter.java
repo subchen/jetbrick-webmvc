@@ -20,11 +20,9 @@
 package jetbrick.web.mvc.action.annotation;
 
 import jetbrick.ioc.annotation.IocConstants;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.mvc.multipart.FilePart;
 
-@Managed
 public final class FilePartArgumentGetter implements TypedArgumentGetter<FilePart> {
 
     @Override

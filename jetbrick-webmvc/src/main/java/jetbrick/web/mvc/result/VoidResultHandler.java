@@ -19,10 +19,8 @@
  */
 package jetbrick.web.mvc.result;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class VoidResultHandler implements ResultHandler<Void> {
 
     @Override

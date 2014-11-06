@@ -17,20 +17,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jetbrick.web.mvc.result.view;
+package jetbrick.web.mvc;
 
-import javax.servlet.http.HttpServletRequest;
+import java.lang.annotation.*;
 
-public final class XmlDataViewHandler extends AbstractDataViewHandler {
+/**
+ * 和 @Managed 形成一对配置.
+ */
+@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ManagedWith {
 
-    @Override
-    public String getType() {
-        return "xml";
-    }
-
-    @Override
-    public String getMimetype(HttpServletRequest request) {
-        return "text/xml";
-    }
+    Class<?> value();
 
 }

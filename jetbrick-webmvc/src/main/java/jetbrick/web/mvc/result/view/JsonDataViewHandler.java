@@ -20,10 +20,8 @@
 package jetbrick.web.mvc.result.view;
 
 import javax.servlet.http.HttpServletRequest;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.result.MimetypeUtils;
 
-@Managed
 public final class JsonDataViewHandler extends AbstractDataViewHandler {
 
     @Override

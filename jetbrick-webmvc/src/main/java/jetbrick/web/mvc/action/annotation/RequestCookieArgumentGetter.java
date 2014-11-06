@@ -20,12 +20,10 @@
 package jetbrick.web.mvc.action.annotation;
 
 import javax.servlet.http.Cookie;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.typecast.Convertor;
 import jetbrick.util.annotation.ValueConstants;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class RequestCookieArgumentGetter implements AnnotatedArgumentGetter<RequestCookie, Object> {
     private String name;
     private boolean required;

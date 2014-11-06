@@ -19,12 +19,10 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.typecast.Convertor;
 import jetbrick.util.annotation.ValueConstants;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class InitParameterArgumentGetter implements AnnotatedArgumentGetter<InitParameter, Object> {
     private String name;
     private boolean required;

@@ -20,7 +20,7 @@
 package jetbrick.web.mvc.result;
 
 import javax.servlet.http.HttpServletResponse;
-import jetbrick.ioc.annotation.ManagedWith;
+import jetbrick.web.mvc.ManagedWith;
 
 @ManagedWith(HttpStatusResultHandler.class)
 public final class HttpStatus {

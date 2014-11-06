@@ -20,11 +20,9 @@
 package jetbrick.web.mvc.action.annotation;
 
 import java.util.List;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.mvc.multipart.FilePart;
 
-@Managed
 public final class FilePartsArgumentGetter implements TypedArgumentGetter<FilePart[]> {
     private static final FilePart[] EMPTY_ARRAY = new FilePart[0];
 

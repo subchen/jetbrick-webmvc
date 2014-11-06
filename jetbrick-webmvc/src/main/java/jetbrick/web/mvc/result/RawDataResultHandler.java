@@ -24,7 +24,6 @@ import java.io.InputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import jetbrick.io.IoUtils;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 
 /**
@@ -32,7 +31,7 @@ import jetbrick.web.mvc.RequestContext;
  *
  * @author Guoqiang Chen
  */
-@Managed
+
 public final class RawDataResultHandler implements ResultHandler<RawData> {
 
     @Override

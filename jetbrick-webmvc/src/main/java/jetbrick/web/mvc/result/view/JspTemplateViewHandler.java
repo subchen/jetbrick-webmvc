@@ -24,10 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import jetbrick.io.resource.ResourceNotFoundException;
 import jetbrick.ioc.annotation.Config;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class JspTemplateViewHandler extends AbstractTemplateViewHandler {
     @Config(value = "web.view.jsp.prefix", required = false)
     private String prefix;

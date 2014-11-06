@@ -20,10 +20,8 @@
 package jetbrick.web.mvc.action.annotation;
 
 import javax.servlet.http.HttpServletRequest;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 
-@Managed
 public final class HttpServletRequestArgumentGetter implements TypedArgumentGetter<HttpServletRequest> {
 
     @Override

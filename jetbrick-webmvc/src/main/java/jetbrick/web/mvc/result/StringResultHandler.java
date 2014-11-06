@@ -19,12 +19,12 @@
  */
 package jetbrick.web.mvc.result;
 
-import jetbrick.ioc.annotation.*;
+import jetbrick.ioc.annotation.Config;
+import jetbrick.ioc.annotation.Inject;
 import jetbrick.util.FilenameUtils;
 import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.result.view.ViewHandler;
 
-@Managed
 public final class StringResultHandler implements ResultHandler<String> {
     @Inject
     private ViewHandlerResolver viewHandlerResolver;

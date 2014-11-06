@@ -22,7 +22,6 @@ package jetbrick.web.mvc.result;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 
 /**
@@ -30,7 +29,7 @@ import jetbrick.web.mvc.RequestContext;
  *
  * @author Guoqiang Chen
  */
-@Managed
+
 public final class RawTextResultHandler implements ResultHandler<RawText> {
 
     @Override

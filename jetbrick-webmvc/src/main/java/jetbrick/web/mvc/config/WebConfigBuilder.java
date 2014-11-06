@@ -32,7 +32,6 @@ import jetbrick.io.finder.ClassFinder;
 import jetbrick.ioc.Ioc;
 import jetbrick.ioc.MutableIoc;
 import jetbrick.ioc.annotation.IocBean;
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.ioc.loader.IocAnnotationLoader;
 import jetbrick.ioc.loader.IocPropertiesLoader;
 import jetbrick.util.ClassLoaderUtils;

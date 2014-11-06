@@ -21,7 +21,7 @@ package jetbrick.web.mvc.result;
 
 import java.io.*;
 import jetbrick.io.stream.UnsafeByteArrayInputStream;
-import jetbrick.ioc.annotation.ManagedWith;
+import jetbrick.web.mvc.ManagedWith;
 
 /**
  * 自定义输出二进制数据.

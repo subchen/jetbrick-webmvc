@@ -19,11 +19,9 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import jetbrick.ioc.annotation.Managed;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.servlet.map.RequestCookieMap;
 
-@Managed
 public final class RequestCookieMapArgumentGetter implements TypedArgumentGetter<RequestCookieMap> {
 
     @Override
