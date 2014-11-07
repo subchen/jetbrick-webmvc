@@ -31,7 +31,7 @@ import jetbrick.web.mvc.action.annotation.AnnotatedArgumentGetter.ArgumentContex
 
 final class ActionMethodInjector {
     private final Method method;
-    private final ArgumentGetter<?>[] resolvers;
+    private final ArgumentGetter<?>[] getters;
 
     @SuppressWarnings("unchecked")
     public static ActionMethodInjector create(MethodInfo method, Class<?> declaringClass) {
@@ -40,11 +40,11 @@ final class ActionMethodInjector {
             return new ActionMethodInjector(method.getMethod(), ArgumentGetter.EMPTY_ARRAY);
         }
 
-        Ioc ioc = WebConfig.getInstance().getIoc();
-        ArgumentGetterResolver resolver = WebConfig.getInstance().getArgumentGetterResolver();
-        ArgumentGetter<?>[] resolvers = new ArgumentGetter[parameters.size()];
+        Ioc ioc = WebConfig.getIoc();
+        ArgumentGetterResolver resolver = WebConfig.getArgumentGetterResolver();
+        ArgumentGetter<?>[] getters = new ArgumentGetter[parameters.size()];
 
-        for (int i = 0; i < resolvers.length; i++) {
+        for (int i = 0; i < getters.length; i++) {
             ParameterInfo parameter = parameters.get(i);
             ArgumentGetter<?> getter = null;
             for (Annotation annotation : parameter.getAnnotations()) {
@@ -86,24 +86,24 @@ final class ActionMethodInjector {
                 throw new IllegalStateException("cannot inject parameter: " + parameter);
             }
 
-            resolvers[i] = getter;
+            getters[i] = getter;
         }
 
-        return new ActionMethodInjector(method.getMethod(), resolvers);
+        return new ActionMethodInjector(method.getMethod(), getters);
     }
 
-    public ActionMethodInjector(Method method, ArgumentGetter<?>[] resolvers) {
+    public ActionMethodInjector(Method method, ArgumentGetter<?>[] getters) {
         this.method = method;
-        this.resolvers = resolvers;
+        this.getters = getters;
     }
 
     public Object invoke(Object action, RequestContext ctx) throws Exception {
         Object[] parameters = ArrayUtils.EMPTY_OBJECT_ARRAY;
-        int length = resolvers.length;
+        int length = getters.length;
         if (length > 0) {
             parameters = new Object[length];
             for (int i = 0; i < length; i++) {
-                parameters[i] = resolvers[i].get(ctx);
+                parameters[i] = getters[i].get(ctx);
             }
         }
         return method.invoke(action, parameters);

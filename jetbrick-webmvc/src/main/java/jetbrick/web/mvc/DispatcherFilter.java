@@ -25,11 +25,10 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import jetbrick.util.JdkUtils;
-import jetbrick.util.VersionUtils;
 import jetbrick.web.mvc.action.HttpMethod;
 import jetbrick.web.mvc.interceptor.Interceptor;
 import jetbrick.web.mvc.interceptor.InterceptorChainImpl;
-import jetbrick.web.mvc.multipart.FileUpload;
+import jetbrick.web.mvc.multipart.FileUploadResolver;
 import jetbrick.web.mvc.multipart.MultipartRequest;
 import jetbrick.web.mvc.plugin.Plugin;
 import jetbrick.web.mvc.result.ResultHandler;
@@ -41,70 +40,72 @@ import org.slf4j.LoggerFactory;
 public final class DispatcherFilter implements Filter {
     private final Logger log = LoggerFactory.getLogger(DispatcherFilter.class);
 
-    private WebConfig config;
-    private BypassRequestUrls bypassUrls;
+    private String httpEncoding;
+    private boolean httpCache;
     private Router router;
-    private FileUpload fileUpload;
+    private BypassRequestUrls bypassRequestUrls;
     private ResultHandlerResolver resultHandlerResolver;
-    private ExceptionHandler exceptionHandler;
-    private String encoding;
+    private FileUploadResolver fileUploadResolver;
 
     @Override
     public void init(FilterConfig fc) throws ServletException {
         log.info("DispatcherFilter starting ...");
         log.info("java.version = {}", JdkUtils.JAVA_VERSION);
-        log.info("jetbrick.webmvc.version = {}", VersionUtils.getVersion(getClass()));
         log.info("user.dir = {}", System.getProperty("user.dir"));
         log.info("java.io.tmpdir = {}", System.getProperty("java.io.tmpdir"));
         log.info("user.timezone = {}", System.getProperty("user.timezone"));
         log.info("file.encoding = {}", System.getProperty("file.encoding"));
 
-        WebContext.setServletContext(fc.getServletContext());
-
         try {
-            config = WebConfigBuilder.build(fc);
-            encoding = config.getHttpEncoding();
-            bypassUrls = config.getBypassRequestUrls();
-            router = config.getRouter();
-            resultHandlerResolver = config.getResultHandlerResolver();
-            exceptionHandler = config.getExceptionHandler();
-            fileUpload = config.getFileUpload();
+            long ts = System.currentTimeMillis();
 
-            log.info("router = {}", router.getClass().getName());
-            log.info("exception.handler = {}", (exceptionHandler == null) ? null : exceptionHandler.getClass().getName());
+            WebInitializer.initialize(fc);
 
-            for (Plugin plugin : config.getPlugins()) {
+            httpEncoding = WebConfig.getHttpEncoding();
+            httpCache = WebConfig.isHttpCache();
+            router = WebConfig.getRouter();
+            bypassRequestUrls = WebConfig.getBypassRequestUrls();
+            resultHandlerResolver = WebConfig.getResultHandlerResolver();
+            fileUploadResolver = WebConfig.getFileUploadResolver();
+
+            log.info("web.version = {}", WebConfig.VERSION);
+            log.info("web.root = {}", WebConfig.getWebroot());
+            log.info("web.development = {}", WebConfig.isDevelopment());
+            log.info("web.upload.dir = {}", WebConfig.getUploaddir());
+            log.info("web.urls.router = {}", router.getClass().getName());
+            log.info("web.urls.bypass = {}", (bypassRequestUrls == null) ? null : bypassRequestUrls.getClass().getName());
+
+            for (Plugin plugin : WebConfig.getPlugins()) {
                 log.info("load plugin: {}", plugin.getClass().getName());
-                plugin.init(config);
+                plugin.initialize();
             }
 
-            for (Interceptor interceptor : config.getInterceptors()) {
+            for (Interceptor interceptor : WebConfig.getInterceptors()) {
                 log.info("load interceptor: {}", interceptor.getClass().getName());
-                interceptor.init(config);
+                interceptor.initialize();
             }
+
+            log.info("DispatcherFilter initialize successfully, Time elapsed: {} ms.", System.currentTimeMillis() - ts);
+
         } catch (Exception e) {
-            log.error("DispatcherFilter init error.", e);
+            log.error("DispatcherFilter initialize error.", e);
             log.error("************************************");
-            log.error("       System.exit() !");
+            log.error("       System.exit(1) !             ");
             log.error("************************************");
             System.exit(1);
         }
-
-        log.info("development = {}", config.isDevelopment());
-        log.info("web.root = {}", config.getWebroot());
-        log.info("DispatcherFilter loaded successfully.");
     }
 
     @Override
     public void destroy() {
         log.info("DispatcherFilter destroy...");
 
-        for (Interceptor interceptor : config.getInterceptors()) {
+        for (Interceptor interceptor : WebConfig.getInterceptors()) {
             log.info("destroy interceptor: {}", interceptor.getClass().getName());
             interceptor.destory();
         }
 
-        for (Plugin plugin : config.getPlugins()) {
+        for (Plugin plugin : WebConfig.getPlugins()) {
             log.info("destroy plugin: {}", plugin.getClass().getName());
             plugin.destory();
         }
@@ -117,17 +118,17 @@ public final class DispatcherFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        request.setCharacterEncoding(encoding);
-        response.setCharacterEncoding(encoding);
+        request.setCharacterEncoding(httpEncoding);
+        response.setCharacterEncoding(httpEncoding);
 
         String path = RequestUtils.getPathInfo(request);
 
-        if (bypassUrls != null && bypassUrls.accept(request, path)) {
+        if (bypassRequestUrls != null && bypassRequestUrls.accept(request, path)) {
             chain.doFilter(request, response);
             return;
         }
 
-        if (config.isHttpCache() == false) {
+        if (httpCache == false) {
             ResponseUtils.setBufferOff(response);
         }
 
@@ -136,14 +137,10 @@ public final class DispatcherFilter implements Filter {
             HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
             RouteInfo route = router.lookup(request, path, httpMethod);
 
-            MultipartRequest multipartRequest = fileUpload.transform(request);
-            if (multipartRequest != null) {
-                request = multipartRequest;
-            }
+            request = fileUploadResolver.transform(request);
             ctx = new RequestContext(request, response, path, httpMethod, route);
 
-            List<Interceptor> interceptors = config.getInterceptors();
-            InterceptorChainImpl interceptorChain = new InterceptorChainImpl(interceptors, ctx);
+            InterceptorChainImpl interceptorChain = new InterceptorChainImpl(WebConfig.getInterceptors(), ctx);
             interceptorChain.invoke();
 
             ResultInfo result = interceptorChain.getResult();
@@ -154,9 +151,10 @@ public final class DispatcherFilter implements Filter {
         } catch (Exception e) {
             request.setAttribute(ExceptionHandler.KEY_IN_REQUEST, e);
 
-            if (exceptionHandler != null) {
+            ExceptionHandler handler = WebConfig.getExceptionHandler();
+            if (handler != null) {
                 try {
-                    exceptionHandler.handleError(ctx, e);
+                    handler.handleError(ctx, e);
                     return;
                 } catch (Exception ex) {
                     e = ex;

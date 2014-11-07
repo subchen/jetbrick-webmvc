@@ -19,25 +19,19 @@
  */
 package jetbrick.web.mvc.result;
 
-import jetbrick.web.mvc.RequestContext;
-import jetbrick.web.mvc.ResultHandlerResolver;
+import jetbrick.web.mvc.*;
 
 public final class ObjectResultHandler implements ResultHandler<Object> {
-    // 没有直接注入，否则会产生循环注入失败
-    private ResultHandlerResolver resolver;
 
     @Override
     public void handle(RequestContext ctx, Object result) throws Exception {
-        if (resolver == null) {
-            resolver = ctx.getWebConfig().getResultHandlerResolver();
-        }
-
         if (result != null) {
             Class<?> resultClass = result.getClass();
             if (resultClass == Object.class) {
                 throw new IllegalStateException("Invalid result class.");
             }
 
+            ResultHandlerResolver resolver = WebConfig.getResultHandlerResolver();
             ResultHandler<Object> handler = resolver.lookup(resultClass);
             handler.handle(ctx, result);
         }

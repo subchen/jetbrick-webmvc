@@ -22,139 +22,102 @@ package jetbrick.web.mvc;
 import java.io.File;
 import java.util.List;
 import javax.servlet.ServletContext;
+import jetbrick.config.Config;
 import jetbrick.ioc.Ioc;
-import jetbrick.ioc.annotation.Config;
-import jetbrick.ioc.annotation.Inject;
-import jetbrick.util.Validate;
+import jetbrick.util.VersionUtils;
 import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.interceptor.Interceptor;
-import jetbrick.web.mvc.multipart.DelegatedFileUpload;
-import jetbrick.web.mvc.multipart.FileUpload;
+import jetbrick.web.mvc.multipart.FileUploadResolver;
 import jetbrick.web.mvc.plugin.Plugin;
 
-// 单例模式，启动的时候自动初始化，由 IoC 容器进行管理.
 public final class WebConfig {
-    private static WebConfig instance;
+    public static final String DEFAULT_CONFI_FILE = "/WEB-INF/jetbrick-webmvc.properties";
 
-    public static WebConfig getInstance() {
-        return instance;
-    }
+    public static final String VERSION = VersionUtils.getVersion(WebConfig.class);
 
-    @Inject
-    private WebConfig() {
-        Validate.isTrue(instance == null);
-        instance = this;
-    }
+    protected static ServletContext servletContext;
+    protected static File webroot;
+    protected static Ioc ioc;
+    protected static Config config;
+    protected static boolean development;
+    protected static String httpEncoding;
+    protected static boolean httpCache;
+    protected static File uploaddir;
+    protected static BypassRequestUrls bypassRequestUrls;
+    protected static Router router;
+    protected static ExceptionHandler exceptionHandler;
+    protected static FileUploadResolver fileUploadResolver;
+    protected static ResultHandlerResolver resultHandlerResolver;
+    protected static ViewHandlerResolver viewHandlerResolver;
+    protected static ArgumentGetterResolver argumentGetterResolver;
+    protected static List<Interceptor> interceptors;
+    protected static List<Plugin> plugins;
 
-    @Inject
-    private Ioc ioc;
-
-    @Config(value = "web.development", defaultValue = "true")
-    private boolean development;
-
-    @Config(value = "web.http.encoding", defaultValue = "utf-8")
-    private String httpEncoding;
-
-    @Config(value = "web.http.cache", defaultValue = "false")
-    private boolean httpCache;
-
-    @Config("web.upload.dir")
-    private File uploaddir;
-
-    @Config("web.root")
-    private File webroot;
-
-    @Inject
-    private ServletContext servletContext;
-
-    @Config(value = "web.urls.bypass", required = false)
-    private BypassRequestUrls bypassUrls;
-
-    @Config("web.urls.router")
-    private Router router;
-
-    @Config(value = "web.exception.handler", required = false)
-    private ExceptionHandler exceptionHandler;
-
-    @Inject
-    private DelegatedFileUpload fileUpload;
-
-    @Inject
-    private ResultHandlerResolver resultHandlerResolver;
-
-    @Inject
-    private ViewHandlerResolver viewHandlerResolver;
-
-    @Inject
-    private ArgumentGetterResolver argumentGetterResolver;
-
-    @Config("web.interceptors")
-    private List<Interceptor> interceptors;
-
-    @Config("web.plugins")
-    private List<Plugin> plugins;
-
-    public Ioc getIoc() {
-        return ioc;
-    }
-
-    public boolean isDevelopment() {
-        return development;
-    }
-
-    public String getHttpEncoding() {
-        return httpEncoding;
-    }
-
-    public boolean isHttpCache() {
-        return httpCache;
-    }
-
-    public File getUploaddir() {
-        return uploaddir;
-    }
-
-    public File getWebroot() {
-        return webroot;
-    }
-
-    public ServletContext getServletContext() {
+    public static ServletContext getServletContext() {
         return servletContext;
     }
 
-    public BypassRequestUrls getBypassRequestUrls() {
-        return bypassUrls;
+    public static Config getConfig() {
+        return config;
     }
 
-    public Router getRouter() {
+    public static boolean isDevelopment() {
+        return development;
+    }
+
+    public static String getHttpEncoding() {
+        return httpEncoding;
+    }
+
+    public static boolean isHttpCache() {
+        return httpCache;
+    }
+
+    public static File getWebroot() {
+        return webroot;
+    }
+
+    public static File getUploaddir() {
+        return uploaddir;
+    }
+
+    public static Ioc getIoc() {
+        return ioc;
+    }
+
+    public static BypassRequestUrls getBypassRequestUrls() {
+        return bypassRequestUrls;
+    }
+
+    public static Router getRouter() {
         return router;
     }
 
-    public ExceptionHandler getExceptionHandler() {
+    public static ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
 
-    public FileUpload getFileUpload() {
-        return fileUpload;
+    public static FileUploadResolver getFileUploadResolver() {
+        return fileUploadResolver;
     }
 
-    public ResultHandlerResolver getResultHandlerResolver() {
+    public static ResultHandlerResolver getResultHandlerResolver() {
         return resultHandlerResolver;
     }
 
-    public ViewHandlerResolver getViewHandlerResolver() {
+    public static ViewHandlerResolver getViewHandlerResolver() {
         return viewHandlerResolver;
     }
 
-    public ArgumentGetterResolver getArgumentGetterResolver() {
+    public static ArgumentGetterResolver getArgumentGetterResolver() {
         return argumentGetterResolver;
     }
 
-    public List<Interceptor> getInterceptors() {
+    public static List<Interceptor> getInterceptors() {
         return interceptors;
     }
 
-    public List<Plugin> getPlugins() {
+    public static List<Plugin> getPlugins() {
         return plugins;
     }
 }

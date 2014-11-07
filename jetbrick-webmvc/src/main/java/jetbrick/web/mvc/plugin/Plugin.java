@@ -23,7 +23,7 @@ import jetbrick.web.mvc.WebConfig;
 
 public interface Plugin {
 
-    public void init(WebConfig config);
+    public void initialize();
 
     public void destory();
 }

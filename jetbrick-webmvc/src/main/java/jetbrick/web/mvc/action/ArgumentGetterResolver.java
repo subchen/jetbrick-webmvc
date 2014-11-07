@@ -28,8 +28,7 @@ import jetbrick.ioc.Ioc;
 import jetbrick.ioc.annotation.*;
 import jetbrick.util.ExceptionUtils;
 import jetbrick.util.Validate;
-import jetbrick.web.mvc.Model;
-import jetbrick.web.mvc.RequestContext;
+import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.action.annotation.*;
 import jetbrick.web.mvc.multipart.FilePart;
 import jetbrick.web.servlet.map.*;
@@ -41,10 +40,6 @@ public final class ArgumentGetterResolver {
     private final Map<Class<?>, TypedArgumentGetter<?>> typedMaps = new IdentityHashMap<Class<?>, TypedArgumentGetter<?>>();
     private final Map<Class<?>, Class<AnnotatedArgumentGetter<?, ?>>> annotatedMaps = new IdentityHashMap<Class<?>, Class<AnnotatedArgumentGetter<?, ?>>>();
 
-    @Inject
-    private Ioc ioc;
-
-    @IocInit
     public void initialize() {
         // typed
         register(RequestContext.class, RequestContextArgumentGetter.class);
@@ -82,6 +77,7 @@ public final class ArgumentGetterResolver {
         if (TypedArgumentGetter.class.isAssignableFrom(argumentGetterClass)) {
             // singleton
             try {
+                Ioc ioc = WebConfig.getIoc();
                 TypedArgumentGetter<?> getter = (TypedArgumentGetter<?>) ioc.newInstance(argumentGetterClass);
                 ioc.injectSetters(getter);
                 ioc.initialize(getter);

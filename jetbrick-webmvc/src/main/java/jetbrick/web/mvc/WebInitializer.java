@@ -20,6 +20,7 @@
 package jetbrick.web.mvc;
 
 import java.lang.annotation.Annotation;
+import java.io.File;
 import java.util.*;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -35,67 +36,88 @@ import jetbrick.util.StringUtils;
 import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.action.Controller;
 import jetbrick.web.mvc.action.annotation.ArgumentGetter;
-import jetbrick.web.mvc.multipart.DelegatedFileUpload;
+import jetbrick.web.mvc.interceptor.Interceptor;
+import jetbrick.web.mvc.multipart.FileUploadResolver;
 import jetbrick.web.mvc.multipart.FileUpload;
+import jetbrick.web.mvc.plugin.Plugin;
 import jetbrick.web.mvc.result.ResultHandler;
 import jetbrick.web.mvc.result.view.ViewHandler;
+import jetbrick.web.mvc.router.*;
 import jetbrick.web.servlet.ServletUtils;
 
-public final class WebConfigBuilder {
+public final class WebInitializer {
 
-    public static WebConfig build(FilterConfig fc) {
+    @SuppressWarnings("unchecked")
+    public static void initialize(FilterConfig fc) {
         ServletContext sc = fc.getServletContext();
+        File webroot = ServletUtils.getWebroot(sc);
 
         // get config file
         String configLocation = fc.getInitParameter("configLocation");
         if (StringUtils.isEmpty(configLocation)) {
-            configLocation = "/WEB-INF/jetbrick-webmvc.properties";
+            configLocation = WebConfig.DEFAULT_CONFI_FILE;
         }
 
         // load config file
         ConfigLoader configLoader = new ConfigLoader();
-        configLoader.load("web.root", ServletUtils.getWebroot(sc).getAbsolutePath());
-        configLoader.load("web.upload.dir", "${java.io.tmpdir}");
+        configLoader.load("web.root", webroot.getAbsolutePath());
         configLoader.load(configLocation, sc);
         Config config = configLoader.asConfig();
 
         // scan components
         List<String> packageNames = config.asStringList("web.scan.packages");
-        @SuppressWarnings("unchecked")
         List<Class<? extends Annotation>> annotationList = Arrays.asList(IocBean.class, Controller.class, Managed.class);
-
         ImplementsScanner scanner = new ImplementsScanner();
         scanner.loadFromConfig();
         scanner.autoscan(packageNames, annotationList);
 
         // create ioc container
         MutableIoc ioc = new MutableIoc();
-        ioc.addBean(Ioc.class.getName(), ioc);
+        ioc.addBean(Ioc.class, ioc);
         ioc.addBean(ServletContext.class, sc);
-        ioc.addBean(WebConfig.class);
-        ioc.addBean(DelegatedFileUpload.class);
+        ioc.addBean(FileUploadResolver.class);
         ioc.addBean(ResultHandlerResolver.class);
         ioc.addBean(ViewHandlerResolver.class);
         ioc.addBean(ArgumentGetterResolver.class);
         ioc.load(new IocPropertiesLoader(config));
         ioc.load(new IocAnnotationLoader(scanner.getList(IocBean.class)));
 
-        // put into servletContext
-        sc.setAttribute(Ioc.class.getName(), ioc);
+        // init web config
+        WebConfig.servletContext = sc;
+        WebConfig.webroot = ServletUtils.getWebroot(sc);
+        WebConfig.ioc = ioc;
+        WebConfig.development = config.asBoolean("web.development", "true");
+        WebConfig.httpEncoding = config.asString("web.http.encoding", "utf-8");
+        WebConfig.httpCache = config.asBoolean("web.http.cache", "false");
+        WebConfig.uploaddir = config.asFile("web.upload.dir", "${java.io.tmpdir}");
+        WebConfig.bypassRequestUrls = config.asObject("web.urls.bypass", BypassRequestUrls.class, PrefixSuffixBypassRequestUrls.class.getName());
+        WebConfig.router = config.asObject("web.urls.router", Router.class, RestfulRouter.class.getName());
+        WebConfig.exceptionHandler = config.asObject("web.error.handler", ExceptionHandler.class);
+        WebConfig.fileUploadResolver = ioc.getBean(FileUploadResolver.class);
+        WebConfig.argumentGetterResolver = ioc.getBean(ArgumentGetterResolver.class);
+        WebConfig.viewHandlerResolver = ioc.getBean(ViewHandlerResolver.class);
+        WebConfig.resultHandlerResolver = ioc.getBean(ResultHandlerResolver.class);
+        WebConfig.interceptors = config.asObjectList("web.interceptors", Interceptor.class);
+        WebConfig.plugins = config.asObjectList("web.plugins", Plugin.class);
 
-        // register others
-        registerManagedComponments(ioc, scanner.getList(Managed.class));
-        registerControllers(ioc, scanner.getList(Controller.class));
-
-        return ioc.getBean(WebConfig.class);
+        // register components
+        registerManaged(scanner.getList(Managed.class));
+        registerControllers(scanner.getList(Controller.class));
     }
 
-    private static void registerManagedComponments(Ioc ioc, Collection<Class<?>> classes) {
-        ResultHandlerResolver resultHandlerResolver = ioc.getBean(ResultHandlerResolver.class);
-        ViewHandlerResolver viewHandlerResolver = ioc.getBean(ViewHandlerResolver.class);
-        ArgumentGetterResolver argumentGetterResolver = ioc.getBean(ArgumentGetterResolver.class);
-        DelegatedFileUpload fileUpload = ioc.getBean(DelegatedFileUpload.class);
+    private static void registerManaged(Collection<Class<?>> classes) {
+        ResultHandlerResolver resultHandlerResolver = WebConfig.getResultHandlerResolver();
+        ViewHandlerResolver viewHandlerResolver = WebConfig.getViewHandlerResolver();
+        ArgumentGetterResolver argumentGetterResolver = WebConfig.getArgumentGetterResolver();
+        FileUploadResolver fileUploadResolver = WebConfig.getFileUploadResolver();
 
+        // initialize
+        resultHandlerResolver.initialize();
+        viewHandlerResolver.initialize();
+        argumentGetterResolver.initialize();
+        fileUploadResolver.initialize();
+
+        // register
         for (Class<?> cls : classes) {
             if (ResultHandler.class.isAssignableFrom(cls)) {
                 Managed annotation = cls.getAnnotation(Managed.class);
@@ -120,16 +142,15 @@ public final class WebConfigBuilder {
                     }
                 }
             } else if (FileUpload.class.isAssignableFrom(cls)) {
-                fileUpload.register(cls);
+                fileUploadResolver.register(cls);
             } else {
                 throw new IllegalStateException("@Managed annotation is illegal in class: " + cls.getName());
             }
         }
     }
 
-    private static void registerControllers(Ioc ioc, Collection<Class<?>> classes) {
-        WebConfig webConfig = ioc.getBean(WebConfig.class);
-        Router router = webConfig.getRouter();
+    private static void registerControllers(Collection<Class<?>> classes) {
+        Router router = WebConfig.getRouter();
         for (Class<?> cls : classes) {
             Controller controller = cls.getAnnotation(Controller.class);
             if (controller != null) {

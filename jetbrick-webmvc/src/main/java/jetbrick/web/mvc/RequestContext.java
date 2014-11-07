@@ -72,11 +72,7 @@ public class RequestContext {
     }
 
     public ServletContext getServletContext() {
-        return WebContext.getServletContext();
-    }
-
-    public WebConfig getWebConfig() {
-        return WebConfig.getInstance();
+        return WebConfig.getServletContext();
     }
 
     public RouteInfo getRouteInfo() {
@@ -89,10 +85,6 @@ public class RequestContext {
 
     public MethodInfo getAction() {
         return routeInfo.getAction().getMethod();
-    }
-
-    public Ioc getIoc() {
-        return (Ioc) getServletContext().getAttribute(Ioc.class.getName());
     }
 
     //---- parameters ------------------------------------------------
@@ -192,7 +184,7 @@ public class RequestContext {
 
     //---- url ------------------------------------------------
     public File getWebroot() {
-        return WebContext.getWebroot();
+        return WebConfig.getWebroot();
     }
 
     public String getPathInfo() {
@@ -213,7 +205,7 @@ public class RequestContext {
     }
 
     public void handleResult(Class<?> resultClass, Object result) throws Throwable {
-        ResultHandlerResolver resolver = getIoc().getBean(ResultHandlerResolver.class);
+        ResultHandlerResolver resolver = WebConfig.getIoc().getBean(ResultHandlerResolver.class);
         ResultHandler<Object> handler = resolver.lookup(resultClass);
         handler.handle(this, result);
     }

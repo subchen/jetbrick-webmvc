@@ -53,7 +53,7 @@ public final class RestfulRouter implements Router {
         String ctrlPath = ValueConstants.trimToEmpty(controller.value());
         ControllerInfo ctrlInfo = new ControllerInfo(clazz, controller);
 
-        ResultHandlerResolver resultHandlerResolver = WebConfig.getInstance().getResultHandlerResolver();
+        ResultHandlerResolver resultHandlerResolver = WebConfig.getResultHandlerResolver();
         KlassInfo klass = KlassInfo.create(clazz);
 
         for (MethodInfo actionMethod : klass.getMethods()) {

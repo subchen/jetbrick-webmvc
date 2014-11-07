@@ -36,10 +36,6 @@ public final class ResultHandlerResolver {
     private final Logger log = LoggerFactory.getLogger(ResultHandlerResolver.class);
     private final Map<Class<?>, ResultHandler<?>> mapping = new IdentityHashMap<Class<?>, ResultHandler<?>>();
 
-    @Inject
-    private Ioc ioc;
-
-    @IocInit
     public void initialize() {
         register(Void.TYPE, VoidResultHandler.class);
         register(Object.class, ObjectResultHandler.class);
@@ -55,6 +51,7 @@ public final class ResultHandlerResolver {
 
         log.info("register ResultHandler: {} -> {}", resultClass.getName(), resultHandlerClass.getName());
 
+        Ioc ioc = WebConfig.getIoc();
         ResultHandler<?> resultHandler = (ResultHandler<?>) ioc.newInstance(resultHandlerClass);
         ioc.injectSetters(resultHandler);
         ioc.initialize(resultHandler);

@@ -36,8 +36,7 @@ public final class UploadUtils {
             fileName = fileName + "." + fileExt;
         }
 
-        File uploaddir = WebConfig.getInstance().getUploaddir();
-        return new File(uploaddir, fileName);
+        return new File(WebConfig.getUploaddir(), fileName);
     }
 
 }

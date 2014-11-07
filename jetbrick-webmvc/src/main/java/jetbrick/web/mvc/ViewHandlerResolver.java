@@ -37,10 +37,6 @@ public final class ViewHandlerResolver {
     private final Logger log = LoggerFactory.getLogger(ViewHandlerResolver.class);
     private final Map<String, ViewHandler> mapping = new HashMap<String, ViewHandler>();
 
-    @Inject
-    private Ioc ioc;
-
-    @IocInit
     public void initialize() {
         register(ServletForwardViewHandler.class);
         register(ServletRedirectViewHandler.class);
@@ -57,6 +53,7 @@ public final class ViewHandlerResolver {
     public void register(Class<?> viewHandlerClass) {
         Validate.isAssignableFrom(ViewHandler.class, viewHandlerClass);
 
+        Ioc ioc = WebConfig.getIoc();
         ViewHandler viewHandler = (ViewHandler) ioc.newInstance(viewHandlerClass);
         ioc.injectSetters(viewHandler);
         ioc.initialize(viewHandler);

@@ -24,7 +24,7 @@ import jetbrick.web.mvc.WebConfig;
 
 public interface Interceptor {
 
-    public void init(WebConfig config);
+    public void initialize();
 
     public void intercept(RequestContext ctx, InterceptorChain chain) throws Exception;
 

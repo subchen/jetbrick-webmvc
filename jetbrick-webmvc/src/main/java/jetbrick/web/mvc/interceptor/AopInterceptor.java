@@ -30,7 +30,7 @@ import jetbrick.web.mvc.WebConfig;
 public abstract class AopInterceptor implements Interceptor {
 
     @Override
-    public void init(WebConfig config) {
+    public void initialize() {
     }
 
     public abstract void before(RequestContext ctx);

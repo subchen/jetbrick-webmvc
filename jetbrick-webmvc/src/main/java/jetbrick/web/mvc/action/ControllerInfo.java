@@ -30,9 +30,9 @@ public final class ControllerInfo {
         this.type = type;
 
         if (annotation.singleton()) {
-            iocObject = new ClassSingletonObject(WebConfig.getInstance().getIoc(), type);
+            iocObject = new ClassSingletonObject(WebConfig.getIoc(), type);
         } else {
-            iocObject = new ClassInstanceObject(WebConfig.getInstance().getIoc(), type);
+            iocObject = new ClassInstanceObject(WebConfig.getIoc(), type);
         }
     }
 

@@ -26,39 +26,37 @@ import javax.servlet.http.HttpServletRequest;
 import jetbrick.ioc.Ioc;
 import jetbrick.ioc.annotation.Inject;
 import jetbrick.ioc.annotation.IocInit;
+import jetbrick.web.mvc.WebConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class DelegatedFileUpload implements FileUpload {
-    private final Logger log = LoggerFactory.getLogger(DelegatedFileUpload.class);
+public final class FileUploadResolver {
+    private final Logger log = LoggerFactory.getLogger(FileUploadResolver.class);
     private final List<FileUpload> uploads = new ArrayList<FileUpload>();
 
-    @Inject
-    private Ioc ioc;
-
-    @IocInit
     public void initialize() {
         register(HTML5FileUpload.class);
     }
 
-    public void register(Class<?> fileUploadClass) {
-        log.debug("register FileUpload: {}", fileUploadClass.getName());
+    public void register(Class<?> implementClass) {
+        log.debug("register FileUpload: {}", implementClass.getName());
 
-        FileUpload fileUpload = (FileUpload) ioc.newInstance(fileUploadClass);
+        Ioc ioc = WebConfig.getIoc();
+        FileUpload fileUpload = (FileUpload) ioc.newInstance(implementClass);
         ioc.injectSetters(fileUpload);
         ioc.initialize(fileUpload);
 
         uploads.add(fileUpload);
     }
 
-    @Override
-    public MultipartRequest transform(HttpServletRequest request) throws IOException {
+    public HttpServletRequest transform(HttpServletRequest request) throws IOException {
         for (FileUpload upload : uploads) {
             MultipartRequest req = upload.transform(request);
             if (req != null) {
                 return req;
             }
         }
-        return null;
+        // 没有找到返回 原始对象
+        return request;
     }
 }
