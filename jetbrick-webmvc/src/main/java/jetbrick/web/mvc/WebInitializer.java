@@ -100,6 +100,28 @@ public final class WebInitializer {
         WebConfig.interceptors = config.asObjectList("web.interceptors", Interceptor.class);
         WebConfig.plugins = config.asObjectList("web.plugins", Plugin.class);
 
+        // ioc init for config object
+        if (WebConfig.bypassRequestUrls != null) {
+            ioc.injectSetters(WebConfig.bypassRequestUrls);
+            ioc.initialize(WebConfig.bypassRequestUrls);
+        }
+        if (WebConfig.router != null) {
+            ioc.injectSetters(WebConfig.router);
+            ioc.initialize(WebConfig.router);
+        }
+        if (WebConfig.exceptionHandler != null) {
+            ioc.injectSetters(WebConfig.exceptionHandler);
+            ioc.initialize(WebConfig.exceptionHandler);
+        }
+        for (Plugin plugin : WebConfig.plugins) {
+            ioc.injectSetters(plugin);
+            ioc.initialize(plugin);
+        }
+        for (Interceptor interceptor : WebConfig.interceptors) {
+            ioc.injectSetters(interceptor);
+            ioc.initialize(interceptor);
+        }
+
         // register components
         registerManaged(scanner.getList(Managed.class));
         registerControllers(scanner.getList(Controller.class));
