@@ -42,13 +42,11 @@ import jetbrick.web.mvc.multipart.FileUploadResolver;
 import jetbrick.web.mvc.plugin.Plugin;
 import jetbrick.web.mvc.result.ResultHandler;
 import jetbrick.web.mvc.result.view.ViewHandler;
-import jetbrick.web.mvc.router.PrefixSuffixBypassRequestUrls;
 import jetbrick.web.mvc.router.RestfulRouter;
 import jetbrick.web.servlet.ServletUtils;
 
 public final class WebInitializer {
 
-    @SuppressWarnings("unchecked")
     public static void initialize(FilterConfig fc) {
         ServletContext sc = fc.getServletContext();
         File webroot = ServletUtils.getWebroot(sc);
@@ -67,7 +65,10 @@ public final class WebInitializer {
 
         // scan components
         List<String> packageNames = config.asStringList("web.scan.packages");
-        List<Class<? extends Annotation>> annotationList = Arrays.asList(IocBean.class, Controller.class, Managed.class);
+        List<Class<? extends Annotation>> annotationList = new ArrayList<Class<? extends Annotation>>(3);
+        annotationList.add(IocBean.class);
+        annotationList.add(Controller.class);
+        annotationList.add(Managed.class);
         ImplementsScanner scanner = new ImplementsScanner();
         scanner.loadFromConfig();
         scanner.autoscan(packageNames, annotationList);
@@ -91,7 +92,7 @@ public final class WebInitializer {
         WebConfig.httpEncoding = config.asString("web.http.encoding", "utf-8");
         WebConfig.httpCache = config.asBoolean("web.http.cache", "false");
         WebConfig.uploaddir = config.asFile("web.upload.dir", "${java.io.tmpdir}");
-        WebConfig.bypassRequestUrls = config.asObject("web.urls.bypass", BypassRequestUrls.class, PrefixSuffixBypassRequestUrls.class.getName());
+        WebConfig.bypassRequestUrls = config.asObject("web.urls.bypass", BypassRequestUrls.class);
         WebConfig.router = config.asObject("web.urls.router", Router.class, RestfulRouter.class.getName());
         WebConfig.exceptionHandler = config.asObject("web.error.handler", ExceptionHandler.class);
         WebConfig.fileUploadResolver = ioc.getBean(FileUploadResolver.class);
