@@ -19,8 +19,6 @@
  */
 package jetbrick.web.mvc.plugin;
 
-import jetbrick.web.mvc.WebConfig;
-
 public interface Plugin {
 
     public void initialize();

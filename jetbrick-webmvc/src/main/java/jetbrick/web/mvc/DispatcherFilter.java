@@ -20,7 +20,6 @@
 package jetbrick.web.mvc;
 
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +28,6 @@ import jetbrick.web.mvc.action.HttpMethod;
 import jetbrick.web.mvc.interceptor.Interceptor;
 import jetbrick.web.mvc.interceptor.InterceptorChainImpl;
 import jetbrick.web.mvc.multipart.FileUploadResolver;
-import jetbrick.web.mvc.multipart.MultipartRequest;
 import jetbrick.web.mvc.plugin.Plugin;
 import jetbrick.web.mvc.result.ResultHandler;
 import jetbrick.web.servlet.RequestUtils;

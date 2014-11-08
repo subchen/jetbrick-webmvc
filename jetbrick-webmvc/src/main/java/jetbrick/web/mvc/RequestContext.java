@@ -24,7 +24,6 @@ import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.*;
 import jetbrick.bean.MethodInfo;
-import jetbrick.ioc.Ioc;
 import jetbrick.web.mvc.action.HttpMethod;
 import jetbrick.web.mvc.multipart.FilePart;
 import jetbrick.web.mvc.multipart.MultipartRequest;

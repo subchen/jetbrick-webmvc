@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import jetbrick.ioc.Ioc;
-import jetbrick.ioc.annotation.Inject;
-import jetbrick.ioc.annotation.IocInit;
 import jetbrick.web.mvc.WebConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

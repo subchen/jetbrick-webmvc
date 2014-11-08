@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.*;
 import jetbrick.ioc.Ioc;
-import jetbrick.ioc.annotation.*;
+import jetbrick.ioc.annotation.InjectParameterWith;
 import jetbrick.util.ExceptionUtils;
 import jetbrick.util.Validate;
 import jetbrick.web.mvc.*;

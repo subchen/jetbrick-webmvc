@@ -20,7 +20,6 @@
 package jetbrick.web.mvc.interceptor;
 
 import jetbrick.web.mvc.RequestContext;
-import jetbrick.web.mvc.WebConfig;
 
 public interface Interceptor {
 
