@@ -29,7 +29,7 @@ public final class StringResultHandler implements ResultHandler<String> {
     @Inject
     private ViewHandlerResolver viewHandlerResolver;
 
-    @Config(value = "web.view.default", defaultValue = "jetx")
+    @Config(value = "web.view.default", defaultValue = "jsp")
     private String defaultViewType;
 
     private ViewHandler defaultViewHandler;
