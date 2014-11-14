@@ -59,8 +59,15 @@ public final class FastjsonResultHandler implements ResultHandler<JSONAware> {
         String mimetype = MimetypeUtils.getJSON(request);
         response.setContentType(mimetype + "; charset=" + characterEncoding);
 
+        // jsonp callback
+        String callback = ctx.getParameter("callback");
+
         PrintWriter out = response.getWriter();
-        out.write(result.toJSONString());
+        if (callback != null) {
+            out.write(callback + '(' + result.toJSONString() + ')');
+        } else {
+            out.write(result.toJSONString());
+        }
         out.flush();
     }
 }

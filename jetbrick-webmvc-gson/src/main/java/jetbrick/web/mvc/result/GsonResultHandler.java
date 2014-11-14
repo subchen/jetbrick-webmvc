@@ -74,8 +74,15 @@ public final class GsonResultHandler implements ResultHandler<JsonElement> {
         String mimetype = MimetypeUtils.getJSON(request);
         response.setContentType(mimetype + "; charset=" + characterEncoding);
 
+        // jsonp callback
+        String callback = ctx.getParameter("callback");
+
         PrintWriter out = response.getWriter();
-        out.write(result.toString());
+        if (callback != null) {
+            out.write(callback + '(' + result.toString() + ')');
+        } else {
+            out.write(result.toString());
+        }
         out.flush();
     }
 }
