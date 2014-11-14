@@ -52,12 +52,7 @@ public final class InterceptorChainImpl implements InterceptorChain {
     }
 
     private void executeAction(RequestContext ctx) throws Exception {
-        RouteInfo route = ctx.getRouteInfo();
-        if (route == null || route == RouteInfo.NOT_FOUND) {
-            throw new WebException("Action not found for URL: " + ctx.getPathInfo());
-        }
-
-        ActionInfo action = route.getAction();
+        ActionInfo action = ctx.getRouteInfo().getAction();
         result = action.execute(ctx);
     }
 }

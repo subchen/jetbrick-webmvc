@@ -134,6 +134,9 @@ public final class DispatcherFilter implements Filter {
         try {
             HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
             RouteInfo route = router.lookup(request, path, httpMethod);
+            if (route == null || route == RouteInfo.NOT_FOUND) {
+                throw new WebException("Action not found for URL: " + path);
+            }
 
             request = fileUploadResolver.transform(request);
             ctx = new RequestContext(request, response, path, httpMethod, route);
