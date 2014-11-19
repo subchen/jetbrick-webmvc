@@ -88,6 +88,7 @@ public final class WebInitializer {
         WebConfig.servletContext = sc;
         WebConfig.webroot = ServletUtils.getWebroot(sc);
         WebConfig.ioc = ioc;
+        WebConfig.config = config;
         WebConfig.development = config.asBoolean("web.development", "true");
         WebConfig.httpEncoding = config.asString("web.http.encoding", "utf-8");
         WebConfig.httpCache = config.asBoolean("web.http.cache", "false");
