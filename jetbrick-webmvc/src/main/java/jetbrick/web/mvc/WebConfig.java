@@ -31,8 +31,7 @@ import jetbrick.web.mvc.multipart.FileUploadResolver;
 import jetbrick.web.mvc.plugin.Plugin;
 
 public final class WebConfig {
-    public static final String DEFAULT_CONFI_FILE = "/WEB-INF/jetbrick-webmvc.properties";
-
+    public static final String DEFAULT_CONFIG_FILE = "/WEB-INF/jetbrick-webmvc.properties";
     public static final String VERSION = VersionUtils.getVersion(WebConfig.class);
 
     protected static ServletContext servletContext;

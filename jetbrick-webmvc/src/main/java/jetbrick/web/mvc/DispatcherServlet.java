@@ -21,23 +21,20 @@ package jetbrick.web.mvc;
 
 import java.io.IOException;
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
-public final class DispatcherFilter implements Filter {
+public final class DispatcherServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
     private Dispatcher dispatcher;
 
     @Override
-    public void init(FilterConfig fc) throws ServletException {
-        dispatcher = new Dispatcher(fc.getServletContext(), fc.getInitParameter("configLocation"));
+    public void init() throws ServletException {
+        dispatcher = new Dispatcher(getServletContext(), getInitParameter("configLocation"));
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-        boolean serviced = dispatcher.service((HttpServletRequest) req, (HttpServletResponse) resp);
-        if (serviced == false) {
-            chain.doFilter(req, resp);
-        }
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        dispatcher.service(request, response);
     }
 
     @Override
