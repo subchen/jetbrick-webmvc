@@ -46,7 +46,7 @@ final class Dispatcher {
     private final FileUploadResolver fileUploadResolver;
 
     public Dispatcher(ServletContext sc, String configLocation) throws ServletException {
-        log.info("DispatcherFilter starting ...");
+        log.info("Dispatcher starting ...");
         log.info("java.version = {}", JdkUtils.JAVA_VERSION);
         log.info("webmvc.version = {}", WebConfig.VERSION);
         log.info("user.dir = {}", System.getProperty("user.dir"));
@@ -82,7 +82,7 @@ final class Dispatcher {
                 interceptor.initialize();
             }
 
-            log.info("DispatcherFilter initialize successfully, Time elapsed: {} ms.", System.currentTimeMillis() - ts);
+            log.info("Dispatcher initialize successfully, Time elapsed: {} ms.", System.currentTimeMillis() - ts);
 
         } catch (Exception e) {
             log.error("Failed to initialize Dispatcher", e);
@@ -164,7 +164,7 @@ final class Dispatcher {
     }
 
     public void destroy() {
-        log.info("DispatcherFilter destroy...");
+        log.info("Dispatcher destroy...");
 
         for (Interceptor interceptor : WebConfig.getInterceptors()) {
             log.info("destroy interceptor: {}", interceptor.getClass().getName());
@@ -176,6 +176,6 @@ final class Dispatcher {
             plugin.destory();
         }
 
-        log.info("DispatcherFilter exit.");
+        log.info("Dispatcher exit.");
     }
 }
