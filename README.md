@@ -28,7 +28,7 @@ Dependency
 </dependency>
 ```
 
-Thirdpart Dependencies
+Thirdpart Integrations
 ---------------------------
 
 ```xml
@@ -45,6 +45,16 @@ Thirdpart Dependencies
 <dependency>
     <groupId>com.github.subchen</groupId>
     <artifactId>jetbrick-webmvc-gson</artifactId>
+    <version>2.0</version>
+</dependency>
+<dependency>
+    <groupId>com.github.subchen</groupId>
+    <artifactId>jetbrick-webmvc-gson</artifactId>
+    <version>2.0</version>
+</dependency>
+<dependency>
+    <groupId>com.github.subchen</groupId>
+    <artifactId>jetbrick-webmvc-freemarker</artifactId>
     <version>2.0</version>
 </dependency>
 ```
