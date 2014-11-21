@@ -21,77 +21,97 @@ package jetbrick.template.web.freemarker;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import javax.servlet.ServletContext;
+
 import jetbrick.config.Config;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.*;
+import jetbrick.io.finder.ClassFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Settings for Freemarker.
- *
+ * <p/>
  * <h2>Set template loader.</h2>
- * <p>
+ * <p/>
  * <strong>webapp</strong>
  * <ul>
- *   <li>freemarker.template_loader = webapp</li>
- *   <li>freemarker.template_loader_path_prefix = /WEB-INF/templates</li>
+ * <li>freemarker.template_loader = webapp</li>
+ * <li>freemarker.template_loader_path_prefix = /WEB-INF/templates</li>
  * </ul>
- * <p>
+ * <p/>
  * <strong>file</strong>
  * <ul>
- *   <li>freemarker.template_loader = webapp</li>
- *   <li>freemarker.template_loader_path_prefix = /opt/templates</li>
+ * <li>freemarker.template_loader = webapp</li>
+ * <li>freemarker.template_loader_path_prefix = /opt/templates</li>
  * </ul>
- * <p>
+ * <p/>
  * <strong>classpath</strong>
  * <ul>
- *   <li>freemarker.template_loader = webapp</li>
- *   <li>freemarker.template_loader_path_prefix = /META-INF/templates</li>
+ * <li>freemarker.template_loader = webapp</li>
+ * <li>freemarker.template_loader_path_prefix = /META-INF/templates</li>
  * </ul>
- * <p>
+ * <p/>
  * <strong>customize</strong>
  * <ul>
- *   <li>freemarker.template_loader = $templateLoader</li>
- *   <li>$templateLoader = demo.app.TemplaterLoader</li>
- *   <li>$templateLoader.root = ...</li>
- *   <li>$templateLoader.xxx = ...</li>
+ * <li>freemarker.template_loader = $templateLoader</li>
+ * <li>$templateLoader = demo.app.TemplaterLoader</li>
+ * <li>$templateLoader.root = ...</li>
+ * <li>$templateLoader.xxx = ...</li>
  * </ul>
- *
+ * <p/>
  * <h2>Following keys are freemarker buildin config.</h2>
  * <ul>
- *   <li>freemarker.cache_storage</li>
- *   <li>freemarker.template_update_delay</li>
- *   <li>freemarker.auto_import</li>
- *   <li>freemarker.auto_include</li>
- *   <li>freemarker.whitespace_stripping</li>
- *   <li>freemarker.tag_syntax</li>
- *   <li>freemarker.default_encoding</li>
- *   <li>freemarker.localized_lookup</li>
- *   <li>freemarker.strict_syntax</li>
- *   <li>freemarker.datetime_format</li>
- *   <li>freemarker.date_format</li>
- *   <li>freemarker.time_format</li>
- *   <li>freemarker.number_format</li>
- *   <li>freemarker.boolean_format</li>
- *   <li>freemarker.output_encoding</li>
- *   <li>freemarker.locale</li>
- *   <li>freemarker.time_zone</li>
- *   <li>freemarker.classic_compatible</li>
- *   <li>freemarker.template_exception_handler</li>
- *   <li>freemarker.arithmetic_engine</li>
- *   <li>freemarker.object_wrapper</li>
- *   <li>freemarker.url_escaping_charset</li>
- *   <li>freemarker.strict_bean_models</li>
- *   <li>freemarker.auto_flush</li>
- *   <li>freemarker.new_builtin_class_resolver</li>
+ * <li>freemarker.cache_storage</li>
+ * <li>freemarker.template_update_delay</li>
+ * <li>freemarker.auto_import</li>
+ * <li>freemarker.auto_include</li>
+ * <li>freemarker.whitespace_stripping</li>
+ * <li>freemarker.tag_syntax</li>
+ * <li>freemarker.default_encoding</li>
+ * <li>freemarker.localized_lookup</li>
+ * <li>freemarker.strict_syntax</li>
+ * <li>freemarker.datetime_format</li>
+ * <li>freemarker.date_format</li>
+ * <li>freemarker.time_format</li>
+ * <li>freemarker.number_format</li>
+ * <li>freemarker.boolean_format</li>
+ * <li>freemarker.output_encoding</li>
+ * <li>freemarker.locale</li>
+ * <li>freemarker.time_zone</li>
+ * <li>freemarker.classic_compatible</li>
+ * <li>freemarker.template_exception_handler</li>
+ * <li>freemarker.arithmetic_engine</li>
+ * <li>freemarker.object_wrapper</li>
+ * <li>freemarker.url_escaping_charset</li>
+ * <li>freemarker.strict_bean_models</li>
+ * <li>freemarker.auto_flush</li>
+ * <li>freemarker.new_builtin_class_resolver</li>
+ * </ul>
+ * <p/>
+ * <h2>Extension keys for freemarker config.</h2>
+ * <ul>
+ * <li>freemarker.auto_scan_packages</li>
  * </ul>
  *
  * @author Andy Yin
  * @author Guoqiang Chen
+ * @author Andy Yin
+ *         add Extension config keys:freemarker.auto_scan_packages
  */
 public final class FreemarkerSettings {
+
+    public final static String loggerName = "jetbrick.template.web.freemarker";
+    private final Logger log = LoggerFactory.getLogger(loggerName);
+
     private static final String KEY_PREFIX = "freemarker.";
     private static final String TEMPLATE_LOADER = KEY_PREFIX + "template_loader";
+    private static final String TEMPLATE_AUTO_SCAN_PACKAGES = KEY_PREFIX + "auto_scan_packages";
     private static final String TEMPLATE_LOADER_PATH_PREFIX = KEY_PREFIX + "template_loader_path_prefix";
 
     private static Configuration config = new Configuration();
@@ -100,7 +120,7 @@ public final class FreemarkerSettings {
         return config;
     }
 
-    public void initialize(ServletContext sc, Config cfg) throws TemplateException, IOException {
+    public void initialize(ServletContext sc, Config cfg) throws TemplateException, IOException, InstantiationException, IllegalAccessException {
         for (String key : cfg.keySet(KEY_PREFIX)) {
             String value = cfg.asString(key);
             if (TEMPLATE_LOADER.equals(key)) {
@@ -115,12 +135,51 @@ public final class FreemarkerSettings {
                     TemplateLoader loader = cfg.asObject(key, TemplateLoader.class);
                     config.setTemplateLoader(loader);
                 }
+            } else if (TEMPLATE_AUTO_SCAN_PACKAGES.equals(key)) {
+                autoScanPackages(cfg.asStringList(key), false);
             } else if (TEMPLATE_LOADER_PATH_PREFIX.equals(key)) {
                 continue;
             } else {
                 // buildin config
                 String name = key.substring(KEY_PREFIX.length());
                 config.setSetting(name, value);
+            }
+        }
+    }
+
+    /**
+     * 自动扫描 annotation
+     */
+    public void autoScanPackages(List<String> packageNames, boolean skipErrors) throws IllegalAccessException, InstantiationException {
+
+        if (null == packageNames || packageNames.size() == 0) {
+            return;
+        }
+
+        //@formatter:off
+        @SuppressWarnings("unchecked")
+        List<Class<? extends Annotation>> annotations = Arrays.asList(
+                Freemarker.Method.class,
+                Freemarker.Directive.class
+        );
+        //@formatter:on
+
+        log.info("Scanning @Freemarker.Method, @Freemarker.Directive from " + packageNames + " ...");
+
+        long ts = System.currentTimeMillis();
+        Set<Class<?>> classes = ClassFinder.getClasses(packageNames, true, annotations, skipErrors);
+
+        log.info("Found {} annotated classes, time elapsed {} ms.", classes.size(), System.currentTimeMillis() - ts);
+
+        for (Class<?> cls : classes) {
+            for (Annotation anno : cls.getAnnotations()) {
+                if (anno instanceof Freemarker.Method) {
+                    config.setSharedVariable(((Freemarker.Method) anno).value(), (TemplateModel) cls.newInstance());
+                    break;
+                } else if (anno instanceof Freemarker.Directive) {
+                    config.setSharedVariable(((Freemarker.Directive) anno).value(), (TemplateModel) cls.newInstance());
+                    break;
+                }
             }
         }
     }
