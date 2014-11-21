@@ -22,7 +22,6 @@ package jetbrick.web.mvc;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.*;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import jetbrick.bean.TypeResolverUtils;
 import jetbrick.config.Config;
@@ -47,14 +46,12 @@ import jetbrick.web.servlet.ServletUtils;
 
 public final class WebInitializer {
 
-    public static void initialize(FilterConfig fc) {
-        ServletContext sc = fc.getServletContext();
+    public static void initialize(ServletContext sc, String configLocation) {
         File webroot = ServletUtils.getWebroot(sc);
 
         // get config file
-        String configLocation = fc.getInitParameter("configLocation");
         if (StringUtils.isEmpty(configLocation)) {
-            configLocation = WebConfig.DEFAULT_CONFI_FILE;
+            configLocation = WebConfig.DEFAULT_CONFIG_FILE;
         }
 
         // load config file

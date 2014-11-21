@@ -23,6 +23,7 @@
         <module>jetbrick-webmvc-fileupload</module>
         <module>jetbrick-webmvc-fastjson</module>
         <module>jetbrick-webmvc-gson</module>
+        <module>jetbrick-webmvc-freemarker</module>
     </modules>
 
     <scm>
