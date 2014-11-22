@@ -93,7 +93,8 @@ import freemarker.template.*;
  *
  * <h2>Extension keys for freemarker config.</h2>
  * <ul>
- *   <li>freemarker.auto_scan_packages</li>
+ *   <li>freemarker.auto_scan_packages = com.app.demo</li>
+ *   <li>freemarker.auto_scan_skiperrors = false</li>
  * </ul>
  *
  * @author Guoqiang Chen
@@ -105,8 +106,9 @@ public final class FreemarkerSettings {
 
     private static final String KEY_PREFIX = "freemarker.";
     private static final String TEMPLATE_LOADER = KEY_PREFIX + "template_loader";
-    private static final String TEMPLATE_AUTO_SCAN_PACKAGES = KEY_PREFIX + "auto_scan_packages";
     private static final String TEMPLATE_LOADER_PATH_PREFIX = KEY_PREFIX + "template_loader_path_prefix";
+    private static final String TEMPLATE_AUTO_SCAN_PACKAGES = KEY_PREFIX + "auto_scan_packages";
+    private static final String TEMPLATE_AUTO_SCAN_SKIPERRORS = KEY_PREFIX + "auto_scan_skiperrors";
 
     private static Configuration config = new Configuration();
 
@@ -114,7 +116,7 @@ public final class FreemarkerSettings {
         return config;
     }
 
-    public void initialize(ServletContext sc, Config cfg) throws TemplateException, IOException, InstantiationException, IllegalAccessException {
+    public void initialize(ServletContext sc, Config cfg) throws Exception {
         for (String key : cfg.keySet(KEY_PREFIX)) {
             String value = cfg.asString(key);
             if (TEMPLATE_LOADER.equals(key)) {
@@ -129,9 +131,12 @@ public final class FreemarkerSettings {
                     TemplateLoader loader = cfg.asObject(key, TemplateLoader.class);
                     config.setTemplateLoader(loader);
                 }
-            } else if (TEMPLATE_AUTO_SCAN_PACKAGES.equals(key)) {
-                autoScanPackages(cfg.asStringList(key), false);
             } else if (TEMPLATE_LOADER_PATH_PREFIX.equals(key)) {
+                continue;
+            } else if (TEMPLATE_AUTO_SCAN_PACKAGES.equals(key)) {
+                boolean skiperrors = cfg.asBoolean(TEMPLATE_AUTO_SCAN_SKIPERRORS, "false");
+                autoScanPackages(cfg.asStringList(key), skiperrors);
+            } else if (TEMPLATE_AUTO_SCAN_SKIPERRORS.equals(key)) {
                 continue;
             } else {
                 // buildin config

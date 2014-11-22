@@ -69,7 +69,7 @@ public final class FreemarkerViewHandler extends AbstractTemplateViewHandler {
     }
 
     @IocInit
-    private void initialize() throws IOException, TemplateException, IllegalAccessException, InstantiationException {
+    private void initialize() throws Exception {
         freemarkerSettings = new FreemarkerSettings();
 
         ServletContext sc = WebConfig.getServletContext();
