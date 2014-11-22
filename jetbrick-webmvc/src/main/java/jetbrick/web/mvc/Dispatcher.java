@@ -20,7 +20,8 @@
 package jetbrick.web.mvc;
 
 import java.io.IOException;
-import javax.servlet.*;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import jetbrick.util.JdkUtils;
@@ -103,20 +104,19 @@ final class Dispatcher {
             ResponseUtils.setBufferOff(response);
         }
 
-        RequestContext ctx = null;
-        try {
-            if (bypassRequestUrls != null && bypassRequestUrls.accept(request, path)) {
-                return false; // bypass
-            }
+        if (bypassRequestUrls != null && bypassRequestUrls.accept(request, path)) {
+            return false; // bypass
+        }
 
-            HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
-            RouteInfo route = router.lookup(request, path, httpMethod);
+        HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
+        RouteInfo route = router.lookup(request, path, httpMethod);
+        request = fileUploadResolver.transform(request);
+        RequestContext ctx = new RequestContext(request, response, path, httpMethod, route);
+
+        try {
             if (route == null || route == RouteInfo.NOT_FOUND) {
                 throw new WebException("Action not found for URL: " + path);
             }
-
-            request = fileUploadResolver.transform(request);
-            ctx = new RequestContext(request, response, path, httpMethod, route);
 
             InterceptorChainImpl interceptorChain = new InterceptorChainImpl(WebConfig.getInterceptors(), ctx);
             interceptorChain.invoke();
