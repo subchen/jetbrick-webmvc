@@ -47,7 +47,7 @@ public final class ResultHandlerResolver {
     public void register(Class<?> resultClass, Class<?> resultHandlerClass) {
         Validate.isAssignableFrom(ResultHandler.class, resultHandlerClass);
 
-        log.info("register ResultHandler: {} -> {}", resultClass.getName(), resultHandlerClass.getName());
+        log.debug("register ResultHandler: {} -> {}", resultClass.getName(), resultHandlerClass.getName());
 
         Ioc ioc = WebConfig.getIoc();
         ResultHandler<?> resultHandler = (ResultHandler<?>) ioc.newInstance(resultHandlerClass);

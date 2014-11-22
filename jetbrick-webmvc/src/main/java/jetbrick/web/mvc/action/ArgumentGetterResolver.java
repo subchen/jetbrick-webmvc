@@ -32,11 +32,14 @@ import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.action.annotation.*;
 import jetbrick.web.mvc.multipart.FilePart;
 import jetbrick.web.servlet.map.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 全局 ArgumentGetter 管理器.
  */
 public final class ArgumentGetterResolver {
+    private final Logger log = LoggerFactory.getLogger(ArgumentGetterResolver.class);
     private final Map<Class<?>, TypedArgumentGetter<?>> typedMaps = new IdentityHashMap<Class<?>, TypedArgumentGetter<?>>();
     private final Map<Class<?>, Class<AnnotatedArgumentGetter<?, ?>>> annotatedMaps = new IdentityHashMap<Class<?>, Class<AnnotatedArgumentGetter<?, ?>>>();
 
@@ -64,6 +67,7 @@ public final class ArgumentGetterResolver {
         register(PathVariable.class, PathVariableArgumentGetter.class);
         register(RequestParam.class, RequestParamArgumentGetter.class);
         register(RequestForm.class, RequestFormArgumentGetter.class);
+        register(RequestBody.class, RequestBodyArgumentGetter.class);
         register(RequestHeader.class, RequestHeaderArgumentGetter.class);
         register(RequestCookie.class, RequestCookieArgumentGetter.class);
         register(RequestAttribute.class, RequestAttributeArgumentGetter.class);
@@ -74,6 +78,8 @@ public final class ArgumentGetterResolver {
 
     @SuppressWarnings("unchecked")
     public void register(Class<?> type, Class<?> argumentGetterClass) {
+        log.debug("register ArgumentGetter: {} -> {}", type.getName(), argumentGetterClass.getName());
+
         if (TypedArgumentGetter.class.isAssignableFrom(argumentGetterClass)) {
             // singleton
             try {

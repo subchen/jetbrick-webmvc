@@ -25,7 +25,9 @@ import javax.servlet.ServletContext;
 import jetbrick.config.Config;
 import jetbrick.ioc.Ioc;
 import jetbrick.util.VersionUtils;
-import jetbrick.web.mvc.action.ArgumentGetterResolver;
+import jetbrick.web.mvc.action.*;
+import jetbrick.web.mvc.action.annotation.RequestBodyGetterResolver;
+import jetbrick.web.mvc.action.annotation.RequestParamGetterResolver;
 import jetbrick.web.mvc.interceptor.Interceptor;
 import jetbrick.web.mvc.multipart.FileUploadResolver;
 import jetbrick.web.mvc.plugin.Plugin;
@@ -49,6 +51,8 @@ public final class WebConfig {
     protected static ResultHandlerResolver resultHandlerResolver;
     protected static ViewHandlerResolver viewHandlerResolver;
     protected static ArgumentGetterResolver argumentGetterResolver;
+    protected static RequestParamGetterResolver requestParamGetterResolver;
+    protected static RequestBodyGetterResolver requestBodyGetterResolver;
     protected static List<Interceptor> interceptors;
     protected static List<Plugin> plugins;
 
@@ -110,6 +114,14 @@ public final class WebConfig {
 
     public static ArgumentGetterResolver getArgumentGetterResolver() {
         return argumentGetterResolver;
+    }
+
+    public static RequestParamGetterResolver getRequestParamGetterResolver() {
+        return requestParamGetterResolver;
+    }
+
+    public static RequestBodyGetterResolver getRequestBodyGetterResolver() {
+        return requestBodyGetterResolver;
     }
 
     public static List<Interceptor> getInterceptors() {

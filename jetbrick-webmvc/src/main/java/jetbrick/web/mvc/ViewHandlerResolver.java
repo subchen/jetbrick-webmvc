@@ -57,13 +57,13 @@ public final class ViewHandlerResolver {
         ioc.initialize(viewHandler);
         mapping.put(viewHandler.getType(), viewHandler);
 
-        log.info("register ViewHandler: {} -> {}", viewHandler.getType(), viewHandlerClass.getName());
+        log.debug("register ViewHandler: {} -> {}", viewHandler.getType(), viewHandlerClass.getName());
 
         String suffix = viewHandler.getSuffix();
         if (suffix != null) {
             suffix = StringUtils.removeStart(suffix, ".");
             if (mapping.put(suffix, viewHandler) == null) {
-                log.info("register ViewHandler: {} -> {}", suffix, viewHandlerClass.getName());
+                log.debug("register ViewHandler: {} -> {}", suffix, viewHandlerClass.getName());
             }
         }
     }

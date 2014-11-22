@@ -33,6 +33,7 @@ import jetbrick.util.Validate;
  * @param <T> － 要返回的类型
  */
 public interface AnnotatedArgumentGetter<A extends Annotation, T> extends ArgumentGetter<T> {
+
     public void initialize(ArgumentContext<A> ctx);
 
     public static class ArgumentContext<T extends Annotation> {

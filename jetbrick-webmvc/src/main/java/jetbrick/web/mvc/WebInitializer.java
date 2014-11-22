@@ -32,9 +32,8 @@ import jetbrick.ioc.annotation.IocBean;
 import jetbrick.ioc.loader.IocAnnotationLoader;
 import jetbrick.ioc.loader.IocPropertiesLoader;
 import jetbrick.util.StringUtils;
-import jetbrick.web.mvc.action.ArgumentGetterResolver;
-import jetbrick.web.mvc.action.Controller;
-import jetbrick.web.mvc.action.annotation.ArgumentGetter;
+import jetbrick.web.mvc.action.*;
+import jetbrick.web.mvc.action.annotation.*;
 import jetbrick.web.mvc.interceptor.Interceptor;
 import jetbrick.web.mvc.multipart.FileUpload;
 import jetbrick.web.mvc.multipart.FileUploadResolver;
@@ -78,6 +77,8 @@ public final class WebInitializer {
         ioc.addBean(ResultHandlerResolver.class);
         ioc.addBean(ViewHandlerResolver.class);
         ioc.addBean(ArgumentGetterResolver.class);
+        ioc.addBean(RequestParamGetterResolver.class);
+        ioc.addBean(RequestBodyGetterResolver.class);
         ioc.load(new IocPropertiesLoader(config));
         ioc.load(new IocAnnotationLoader(scanner.getList(IocBean.class)));
 
@@ -95,6 +96,8 @@ public final class WebInitializer {
         WebConfig.exceptionHandler = config.asObject("web.error.handler", ExceptionHandler.class);
         WebConfig.fileUploadResolver = ioc.getBean(FileUploadResolver.class);
         WebConfig.argumentGetterResolver = ioc.getBean(ArgumentGetterResolver.class);
+        WebConfig.requestParamGetterResolver = ioc.getBean(RequestParamGetterResolver.class);
+        WebConfig.requestBodyGetterResolver = ioc.getBean(RequestBodyGetterResolver.class);
         WebConfig.viewHandlerResolver = ioc.getBean(ViewHandlerResolver.class);
         WebConfig.resultHandlerResolver = ioc.getBean(ResultHandlerResolver.class);
         WebConfig.interceptors = config.asObjectList("web.interceptors", Interceptor.class);
@@ -131,12 +134,16 @@ public final class WebInitializer {
         ResultHandlerResolver resultHandlerResolver = WebConfig.getResultHandlerResolver();
         ViewHandlerResolver viewHandlerResolver = WebConfig.getViewHandlerResolver();
         ArgumentGetterResolver argumentGetterResolver = WebConfig.getArgumentGetterResolver();
+        RequestParamGetterResolver requestParamGetterResolver = WebConfig.getRequestParamGetterResolver();
+        RequestBodyGetterResolver requestBodyGetterResolver = WebConfig.getRequestBodyGetterResolver();
         FileUploadResolver fileUploadResolver = WebConfig.getFileUploadResolver();
 
         // initialize
         resultHandlerResolver.initialize();
         viewHandlerResolver.initialize();
         argumentGetterResolver.initialize();
+        requestParamGetterResolver.initialize();
+        requestBodyGetterResolver.initialize();
         fileUploadResolver.initialize();
 
         // register
@@ -161,6 +168,26 @@ public final class WebInitializer {
                 } else {
                     for (Class<?> type : annotation.value()) {
                         argumentGetterResolver.register(type, cls);
+                    }
+                }
+            } else if (RequestParamGetter.class.isAssignableFrom(cls)) {
+                Managed annotation = cls.getAnnotation(Managed.class);
+                if (annotation == null || annotation.value().length == 0) {
+                    Class<?> type = TypeResolverUtils.getRawType(RequestParamGetter.class.getTypeParameters()[0], cls);
+                    requestParamGetterResolver.register(type, cls);
+                } else {
+                    for (Class<?> type : annotation.value()) {
+                        requestParamGetterResolver.register(type, cls);
+                    }
+                }
+            } else if (RequestBodyGetter.class.isAssignableFrom(cls)) {
+                Managed annotation = cls.getAnnotation(Managed.class);
+                if (annotation == null || annotation.value().length == 0) {
+                    Class<?> type = TypeResolverUtils.getRawType(RequestBodyGetter.class.getTypeParameters()[0], cls);
+                    requestBodyGetterResolver.register(type, cls);
+                } else {
+                    for (Class<?> type : annotation.value()) {
+                        requestBodyGetterResolver.register(type, cls);
                     }
                 }
             } else if (FileUpload.class.isAssignableFrom(cls)) {

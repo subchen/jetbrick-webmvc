@@ -25,50 +25,63 @@ import jetbrick.util.ArrayUtils;
 import jetbrick.util.StringUtils;
 import jetbrick.util.annotation.ValueConstants;
 import jetbrick.web.mvc.RequestContext;
-import jetbrick.web.mvc.multipart.FilePart;
+import jetbrick.web.mvc.WebConfig;
 
 public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter<RequestParam, Object> {
-    // 区分不同的场景
-    private static final int SCENARIO_FILE = 1;
-    private static final int SCENARIO_ARRAY = 2;
-    private static final int SCENARIO_ELEMENT = 3;
 
-    private int scenario;
-    private Class<?> type; // 参数类型
-    private String name;
-    private boolean required;
-    private String defaultValue;
-    private Convertor<?> cast;
+    private AbstractRequestParamGetter proxy;
 
     @Override
     public void initialize(ArgumentContext<RequestParam> ctx) {
-        type = ctx.getRawParameterType();
+        Class<?> type = ctx.getRawParameterType();
 
-        if (FilePart.class.isAssignableFrom(type)) {
-            scenario = SCENARIO_FILE;
-            cast = null;
+        if (type == String.class) {
+            proxy = new BasicRequestParamGetter();
         } else if (type.isArray()) {
-            scenario = SCENARIO_ARRAY;
-            type = type.getComponentType();
-            cast = null;
+            proxy = new ArrayRequestParamGetter();
+            ((ArrayRequestParamGetter) proxy).elementType = type.getComponentType();
         } else {
-            scenario = SCENARIO_ELEMENT;
-            cast = ctx.getTypeConvertor();
+            RequestParamGetter<?> requestParamGetter = WebConfig.getRequestParamGetterResolver().resolve(type);
+            if (requestParamGetter == null) {
+                proxy = new BasicRequestParamGetter();
+                ((BasicRequestParamGetter) proxy).cast = ctx.getTypeConvertor();
+            } else {
+                proxy = new CustomizedRequestParamGetter();
+                ((CustomizedRequestParamGetter) proxy).requestParamGetter = requestParamGetter;
+            }
         }
 
         RequestParam annotation = ctx.getAnnotation();
-        name = annotation.value();
+        String name = annotation.value();
         if (ValueConstants.isEmptyOrNull(name)) {
             name = ctx.getParameterName();
         }
-        required = annotation.required();
-        defaultValue = ValueConstants.trimToNull(annotation.defaultValue());
+
+        proxy.name = name;
+        proxy.required = annotation.required();
+        proxy.defaultValue = ValueConstants.trimToNull(annotation.defaultValue());
     }
 
     @Override
-    public Object get(RequestContext ctx) {
-        switch (scenario) {
-        case SCENARIO_ELEMENT: {
+    public Object get(RequestContext ctx) throws Exception {
+        return proxy.get(ctx);
+    }
+
+    static abstract class AbstractRequestParamGetter implements AnnotatedArgumentGetter<RequestParam, Object> {
+        protected String name;
+        protected boolean required;
+        protected String defaultValue;
+
+        @Override
+        public void initialize(ArgumentContext<RequestParam> ctx) {
+        }
+    }
+
+    static final class BasicRequestParamGetter extends AbstractRequestParamGetter {
+        protected Convertor<?> cast;
+
+        @Override
+        public Object get(RequestContext ctx) throws Exception {
             String value = ctx.getParameter(name);
             if (value == null) {
                 value = defaultValue;
@@ -87,8 +100,13 @@ public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter
 
             return value;
         }
+    }
 
-        case SCENARIO_ARRAY: {
+    static final class ArrayRequestParamGetter extends AbstractRequestParamGetter {
+        protected Class<?> elementType;
+
+        @Override
+        public Object get(RequestContext ctx) throws Exception {
             String[] values = ctx.getParameterValues(name);
             if (values == null) {
                 if (defaultValue != null) {
@@ -97,21 +115,26 @@ public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter
             }
 
             if (values == null) {
+                //if (required) {
+                //    throw new IllegalStateException("request parameter is not found: " + name);
+                //}
                 values = ArrayUtils.EMPTY_STRING_ARRAY;
             }
 
-            return TypeCastUtils.convertToArray(values, type);
+            return TypeCastUtils.convertToArray(values, elementType);
         }
+    }
 
-        case SCENARIO_FILE: {
-            Object value = ctx.getFilePart(name);
+    static final class CustomizedRequestParamGetter extends AbstractRequestParamGetter {
+        protected RequestParamGetter<?> requestParamGetter;
+
+        @Override
+        public Object get(RequestContext ctx) throws Exception {
+            Object value = requestParamGetter.get(ctx, name);
             if (value == null && required) {
-                throw new IllegalStateException("upload file object is not found: " + name);
+                throw new IllegalStateException("request parameter is not found: " + name);
             }
             return value;
         }
-        }
-
-        throw new IllegalStateException("unreachable");
     }
 }
