@@ -31,6 +31,8 @@ import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.result.view.AbstractTemplateViewHandler;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * View Handler for Freemarker.
@@ -41,6 +43,7 @@ import freemarker.template.TemplateException;
 @Managed
 public final class FreemarkerViewHandler extends AbstractTemplateViewHandler {
     private final String KEY_CONFIG_LOCATION = "freemarker-config-location";
+    private final Logger log = LoggerFactory.getLogger(FreemarkerSettings.loggerName);
 
     @Config(value = "web.view.ftl.prefix", required = false)
     private String prefix;
@@ -66,15 +69,17 @@ public final class FreemarkerViewHandler extends AbstractTemplateViewHandler {
     }
 
     @IocInit
-    private void initialize() throws IOException, TemplateException {
+    private void initialize() throws IOException, TemplateException, IllegalAccessException, InstantiationException {
         freemarkerSettings = new FreemarkerSettings();
 
         ServletContext sc = WebConfig.getServletContext();
         String configLocation = sc.getInitParameter(KEY_CONFIG_LOCATION);
         if (StringUtils.isNotEmpty(configLocation)) {
+            log.debug("Loadding Freemarker config from "+configLocation+" ... ");
             jetbrick.config.Config config = new ConfigLoader().load(configLocation, sc).asConfig();
             freemarkerSettings.initialize(sc, config);
         } else {
+            log.debug("Loadding Freemarker config from Jetbrock MVC Config file  ... ");
             freemarkerSettings.initialize(sc, WebConfig.getConfig());
         }
     }
