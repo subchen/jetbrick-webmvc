@@ -10,4 +10,4 @@ target/
 .settings/
 
 *.iml
-.idea
+.idea/

@@ -29,10 +29,10 @@ import jetbrick.ioc.annotation.IocInit;
 import jetbrick.util.StringUtils;
 import jetbrick.web.mvc.*;
 import jetbrick.web.mvc.result.view.AbstractTemplateViewHandler;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * View Handler for Freemarker.
@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
  */
 @Managed
 public final class FreemarkerViewHandler extends AbstractTemplateViewHandler {
+    private final Logger log = LoggerFactory.getLogger(FreemarkerViewHandler.class);
     private final String KEY_CONFIG_LOCATION = "freemarker-config-location";
-    private final Logger log = LoggerFactory.getLogger(FreemarkerSettings.loggerName);
 
     @Config(value = "web.view.ftl.prefix", required = false)
     private String prefix;
@@ -75,11 +75,11 @@ public final class FreemarkerViewHandler extends AbstractTemplateViewHandler {
         ServletContext sc = WebConfig.getServletContext();
         String configLocation = sc.getInitParameter(KEY_CONFIG_LOCATION);
         if (StringUtils.isNotEmpty(configLocation)) {
-            log.debug("Loadding Freemarker config from "+configLocation+" ... ");
+            log.debug("Loadding Freemarker config from {} ...", configLocation);
             jetbrick.config.Config config = new ConfigLoader().load(configLocation, sc).asConfig();
             freemarkerSettings.initialize(sc, config);
         } else {
-            log.debug("Loadding Freemarker config from Jetbrock MVC Config file  ... ");
+            log.debug("Loadding Freemarker config from jetbrick-mvc config file ... ");
             freemarkerSettings.initialize(sc, WebConfig.getConfig());
         }
     }
@@ -88,10 +88,6 @@ public final class FreemarkerViewHandler extends AbstractTemplateViewHandler {
     protected void doRender(RequestContext ctx, String viewPathName) throws IOException, TemplateException {
         HttpServletResponse response = ctx.getResponse();
         response.setContentType("text/html; charset=" + response.getCharacterEncoding());
-
-        //if (viewPathName.startsWith("/")) {
-        //viewPathName = viewPathName.substring(1);
-        //}
 
         Template template = freemarkerSettings.getTemplate(viewPathName);
         WebContextMap context = new WebContextMap(ctx.getRequest(), response, ctx.getModel());
