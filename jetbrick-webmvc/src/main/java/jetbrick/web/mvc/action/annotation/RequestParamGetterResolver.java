@@ -21,11 +21,13 @@ package jetbrick.web.mvc.action.annotation;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import javax.xml.bind.JAXBElement;
 import jetbrick.ioc.Ioc;
 import jetbrick.web.mvc.WebConfig;
 import jetbrick.web.mvc.multipart.FilePart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 public final class RequestParamGetterResolver {
     private final Logger log = LoggerFactory.getLogger(RequestParamGetterResolver.class);
@@ -33,6 +35,8 @@ public final class RequestParamGetterResolver {
 
     public void initialize() {
         register(FilePart.class, FilePartRequestParamGetter.class);
+        register(Document.class, JAXPDocumentRequestParamGetter.class);
+        register(JAXBElement.class, JAXBElementRequestParamGetter.class);
     }
 
     public <T> void register(Class<T> cls, Class<?> getterCls) {
