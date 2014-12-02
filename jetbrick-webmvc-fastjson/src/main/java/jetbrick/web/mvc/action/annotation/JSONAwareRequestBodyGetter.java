@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 import jetbrick.io.IoUtils;
+import jetbrick.bean.ParameterInfo;
 import jetbrick.web.mvc.RequestContext;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONAware;
@@ -30,7 +31,7 @@ import com.alibaba.fastjson.JSONAware;
 public final class JSONAwareRequestBodyGetter implements RequestBodyGetter<JSONAware> {
 
     @Override
-    public JSONAware get(RequestContext ctx) throws IOException {
+    public JSONAware get(RequestContext ctx, ParameterInfo parameter) throws IOException {
         HttpServletRequest request = ctx.getRequest();
         InputStream is = null;
         try {

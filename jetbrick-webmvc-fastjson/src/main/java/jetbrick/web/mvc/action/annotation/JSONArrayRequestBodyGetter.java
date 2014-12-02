@@ -22,6 +22,7 @@ package jetbrick.web.mvc.action.annotation;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
+import jetbrick.bean.ParameterInfo;
 import jetbrick.io.IoUtils;
 import jetbrick.web.mvc.RequestContext;
 import com.alibaba.fastjson.JSON;
@@ -30,7 +31,7 @@ import com.alibaba.fastjson.JSONArray;
 public final class JSONArrayRequestBodyGetter implements RequestBodyGetter<JSONArray> {
 
     @Override
-    public JSONArray get(RequestContext ctx) throws IOException {
+    public JSONArray get(RequestContext ctx, ParameterInfo parameter) throws IOException {
         HttpServletRequest request = ctx.getRequest();
         InputStream is = null;
         try {

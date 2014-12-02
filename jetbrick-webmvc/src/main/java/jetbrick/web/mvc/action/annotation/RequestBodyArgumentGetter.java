@@ -19,15 +19,17 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
+import jetbrick.bean.ParameterInfo;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.mvc.WebConfig;
 
 public final class RequestBodyArgumentGetter implements AnnotatedArgumentGetter<RequestBody, Object> {
-
+    private ParameterInfo parameter;
     private RequestBodyGetter<?> requestBodyGetter;
 
     @Override
     public void initialize(ArgumentContext<RequestBody> ctx) {
+        parameter = ctx.getParameter();
         requestBodyGetter = WebConfig.getRequestBodyGetterResolver().resolve(ctx.getRawParameterType());
         if (requestBodyGetter == null) {
             throw new IllegalStateException("Unable to resolve RequestBodyGetter for " + ctx.getRawParameterType());
@@ -36,7 +38,7 @@ public final class RequestBodyArgumentGetter implements AnnotatedArgumentGetter<
 
     @Override
     public Object get(RequestContext ctx) throws Exception {
-        return requestBodyGetter.get(ctx);
+        return requestBodyGetter.get(ctx, parameter);
     }
 
 }
