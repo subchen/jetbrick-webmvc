@@ -31,13 +31,13 @@ import java.lang.annotation.*;
 public final class Freemarker {
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE})
+    @Target({ ElementType.TYPE })
     public @interface Method {
         String value();
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE})
+    @Target({ ElementType.TYPE })
     public @interface Directive {
         String value();
     }
