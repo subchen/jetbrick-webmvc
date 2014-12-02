@@ -19,9 +19,11 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
+import jetbrick.bean.ParameterInfo;
 import jetbrick.web.mvc.RequestContext;
 
 public interface RequestParamGetter<T> {
 
-    public T get(RequestContext ctx, String name);
+    public T get(RequestContext ctx, ParameterInfo parameter, String name) throws Exception;
+
 }

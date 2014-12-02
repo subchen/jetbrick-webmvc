@@ -19,6 +19,7 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
+import jetbrick.bean.ParameterInfo;
 import jetbrick.typecast.Convertor;
 import jetbrick.typecast.TypeCastUtils;
 import jetbrick.util.ArrayUtils;
@@ -36,18 +37,15 @@ public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter
         Class<?> type = ctx.getRawParameterType();
 
         if (type == String.class) {
-            proxy = new BasicRequestParamGetter();
+            proxy = new BasicRequestParamGetter(null);
         } else if (type.isArray()) {
-            proxy = new ArrayRequestParamGetter();
-            ((ArrayRequestParamGetter) proxy).elementType = type.getComponentType();
+            proxy = new ArrayRequestParamGetter(type.getComponentType());
         } else {
             RequestParamGetter<?> requestParamGetter = WebConfig.getRequestParamGetterResolver().resolve(type);
             if (requestParamGetter == null) {
-                proxy = new BasicRequestParamGetter();
-                ((BasicRequestParamGetter) proxy).cast = ctx.getTypeConvertor();
+                proxy = new BasicRequestParamGetter(ctx.getTypeConvertor());
             } else {
-                proxy = new CustomizedRequestParamGetter();
-                ((CustomizedRequestParamGetter) proxy).requestParamGetter = requestParamGetter;
+                proxy = new CustomizedRequestParamGetter(ctx.getParameter(), requestParamGetter);
             }
         }
 
@@ -78,7 +76,11 @@ public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter
     }
 
     static final class BasicRequestParamGetter extends AbstractRequestParamGetter {
-        protected Convertor<?> cast;
+        private final Convertor<?> convertor;
+
+        public BasicRequestParamGetter(Convertor<?> convertor) {
+            this.convertor = convertor;
+        }
 
         @Override
         public Object get(RequestContext ctx) throws Exception {
@@ -94,8 +96,8 @@ public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter
                 return null;
             }
 
-            if (cast != null) {
-                return cast.convert(value);
+            if (convertor != null) {
+                return convertor.convert(value);
             }
 
             return value;
@@ -103,7 +105,11 @@ public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter
     }
 
     static final class ArrayRequestParamGetter extends AbstractRequestParamGetter {
-        protected Class<?> elementType;
+        private final Class<?> elementType;
+
+        public ArrayRequestParamGetter(Class<?> elementType) {
+            this.elementType = elementType;
+        }
 
         @Override
         public Object get(RequestContext ctx) throws Exception {
@@ -126,11 +132,17 @@ public final class RequestParamArgumentGetter implements AnnotatedArgumentGetter
     }
 
     static final class CustomizedRequestParamGetter extends AbstractRequestParamGetter {
-        protected RequestParamGetter<?> requestParamGetter;
+        private final ParameterInfo parameter;
+        private final RequestParamGetter<?> requestParamGetter;
+
+        public CustomizedRequestParamGetter(ParameterInfo parameter, RequestParamGetter<?> requestParamGetter) {
+            this.parameter = parameter;
+            this.requestParamGetter = requestParamGetter;
+        }
 
         @Override
         public Object get(RequestContext ctx) throws Exception {
-            Object value = requestParamGetter.get(ctx, name);
+            Object value = requestParamGetter.get(ctx, parameter, name);
             if (value == null && required) {
                 throw new IllegalStateException("request parameter is not found: " + name);
             }

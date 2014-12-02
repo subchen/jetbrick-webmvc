@@ -23,5 +23,5 @@ import jetbrick.web.mvc.RequestContext;
 
 public interface RequestBodyGetter<T> {
 
-    public T get(RequestContext ctx);
+    public T get(RequestContext ctx) throws Exception;
 }

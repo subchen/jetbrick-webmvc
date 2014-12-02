@@ -30,15 +30,13 @@ import com.alibaba.fastjson.JSONArray;
 public final class JSONArrayRequestBodyGetter implements RequestBodyGetter<JSONArray> {
 
     @Override
-    public JSONArray get(RequestContext ctx) {
+    public JSONArray get(RequestContext ctx) throws IOException {
         HttpServletRequest request = ctx.getRequest();
         InputStream is = null;
         try {
             is = request.getInputStream();
             String body = IoUtils.toString(is, request.getCharacterEncoding());
             return JSON.parseArray(body);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
         } finally {
             IoUtils.closeQuietly(is);
         }

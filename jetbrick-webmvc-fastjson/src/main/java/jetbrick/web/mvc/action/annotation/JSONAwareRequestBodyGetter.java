@@ -30,15 +30,13 @@ import com.alibaba.fastjson.JSONAware;
 public final class JSONAwareRequestBodyGetter implements RequestBodyGetter<JSONAware> {
 
     @Override
-    public JSONAware get(RequestContext ctx) {
+    public JSONAware get(RequestContext ctx) throws IOException {
         HttpServletRequest request = ctx.getRequest();
         InputStream is = null;
         try {
             is = request.getInputStream();
             String body = IoUtils.toString(is, request.getCharacterEncoding());
             return (JSONAware) JSON.parse(body);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
         } finally {
             IoUtils.closeQuietly(is);
         }

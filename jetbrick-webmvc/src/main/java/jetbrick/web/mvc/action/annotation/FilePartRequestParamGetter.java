@@ -19,13 +19,14 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
+import jetbrick.bean.ParameterInfo;
 import jetbrick.web.mvc.RequestContext;
 import jetbrick.web.mvc.multipart.FilePart;
 
 public final class FilePartRequestParamGetter implements RequestParamGetter<FilePart> {
 
     @Override
-    public FilePart get(RequestContext ctx, String name) {
+    public FilePart get(RequestContext ctx, ParameterInfo parameter, String name) {
         return ctx.getFilePart(name);
     }
 }
