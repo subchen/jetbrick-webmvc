@@ -21,16 +21,20 @@ package jetbrick.web.mvc.action.annotation;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import javax.xml.bind.JAXBElement;
 import jetbrick.ioc.Ioc;
 import jetbrick.web.mvc.WebConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 public final class RequestBodyGetterResolver {
     private final Logger log = LoggerFactory.getLogger(RequestBodyGetterResolver.class);
     private final Map<Class<?>, RequestBodyGetter<?>> getters = new IdentityHashMap<Class<?>, RequestBodyGetter<?>>();
 
     public void initialize() {
+        register(Document.class, JAXPDocumentRequestBodyGetter.class);
+        register(JAXBElement.class, JAXBElementRequestBodyGetter.class);
     }
 
     public void register(Class<?> cls, Class<?> getterCls) {
