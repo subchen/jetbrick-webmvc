@@ -20,7 +20,8 @@
 package jetbrick.web.mvc.interceptor;
 
 import java.util.List;
-import jetbrick.web.mvc.*;
+import jetbrick.web.mvc.RequestContext;
+import jetbrick.web.mvc.ResultInfo;
 import jetbrick.web.mvc.action.ActionInfo;
 
 /**

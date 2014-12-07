@@ -25,7 +25,7 @@ import javax.servlet.ServletContext;
 import jetbrick.config.Config;
 import jetbrick.ioc.Ioc;
 import jetbrick.util.VersionUtils;
-import jetbrick.web.mvc.action.*;
+import jetbrick.web.mvc.action.ArgumentGetterResolver;
 import jetbrick.web.mvc.action.annotation.RequestBodyGetterResolver;
 import jetbrick.web.mvc.action.annotation.RequestParamGetterResolver;
 import jetbrick.web.mvc.interceptor.Interceptor;

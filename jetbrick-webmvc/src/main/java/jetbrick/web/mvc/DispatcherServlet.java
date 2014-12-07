@@ -20,7 +20,7 @@
 package jetbrick.web.mvc;
 
 import java.io.IOException;
-import javax.servlet.*;
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 public final class DispatcherServlet extends HttpServlet {

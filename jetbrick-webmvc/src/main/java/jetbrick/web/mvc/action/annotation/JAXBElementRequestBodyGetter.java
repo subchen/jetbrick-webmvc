@@ -19,7 +19,6 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import java.io.StringReader;
 import javax.xml.bind.*;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
