@@ -124,7 +124,7 @@ public final class DispatcherFilter implements Filter {
 
         try {
             if (route == null || route == RouteInfo.NOT_FOUND) {
-                throw new WebException("Action not found for URL: " + path);
+                throw new ActionNotFoundException(path);
             }
 
             InterceptorChainImpl interceptorChain = new InterceptorChainImpl(WebConfig.getInterceptors(), ctx);
@@ -156,14 +156,14 @@ public final class DispatcherFilter implements Filter {
             }
         }
 
+        if (e instanceof RuntimeException) {
+            throw (RuntimeException) e;
+        }
         if (e instanceof IOException) {
             throw (IOException) e;
         }
         if (e instanceof ServletException) {
             throw (ServletException) e;
-        }
-        if (e instanceof RuntimeException) {
-            throw (RuntimeException) e;
         }
 
         throw new ServletException(e);
