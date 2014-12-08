@@ -93,6 +93,7 @@ public final class WebInitializer {
         WebConfig.httpCache = config.asBoolean("web.http.cache", "false");
         WebConfig.uploaddir = config.asFile("web.upload.dir", "${java.io.tmpdir}");
         WebConfig.bypassRequestUrls = config.asObject("web.urls.bypass", BypassRequestUrls.class);
+        WebConfig.corsRequestProcessor = config.asObject("web.urls.cors", CORSRequestProcessor.class);
         WebConfig.router = config.asObject("web.urls.router", Router.class, RestfulRouter.class.getName());
         WebConfig.exceptionHandler = config.asObject("web.error.handler", ExceptionHandler.class);
         WebConfig.fileUploadResolver = ioc.getBean(FileUploadResolver.class);
@@ -108,6 +109,10 @@ public final class WebInitializer {
         if (WebConfig.bypassRequestUrls != null) {
             ioc.injectSetters(WebConfig.bypassRequestUrls);
             ioc.initialize(WebConfig.bypassRequestUrls);
+        }
+        if (WebConfig.corsRequestProcessor != null) {
+            ioc.injectSetters(WebConfig.corsRequestProcessor);
+            ioc.initialize(WebConfig.corsRequestProcessor);
         }
         if (WebConfig.router != null) {
             ioc.injectSetters(WebConfig.router);

@@ -45,6 +45,7 @@ public final class WebConfig {
     protected static boolean httpCache;
     protected static File uploaddir;
     protected static BypassRequestUrls bypassRequestUrls;
+    protected static CORSRequestProcessor corsRequestProcessor;
     protected static Router router;
     protected static ExceptionHandler exceptionHandler;
     protected static FileUploadResolver fileUploadResolver;
@@ -90,6 +91,10 @@ public final class WebConfig {
 
     public static BypassRequestUrls getBypassRequestUrls() {
         return bypassRequestUrls;
+    }
+
+    public static CORSRequestProcessor getCORSRequestProcessor() {
+        return corsRequestProcessor;
     }
 
     public static Router getRouter() {

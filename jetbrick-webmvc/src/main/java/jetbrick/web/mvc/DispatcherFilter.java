@@ -42,6 +42,7 @@ public final class DispatcherFilter implements Filter {
     private boolean httpCache;
     private Router router;
     private BypassRequestUrls bypassRequestUrls;
+    private CORSRequestProcessor corsRequestProcessor;
     private ResultHandlerResolver resultHandlerResolver;
     private FileUploadResolver fileUploadResolver;
     private ExceptionHandler exceptionHandler;
@@ -67,6 +68,7 @@ public final class DispatcherFilter implements Filter {
             httpCache = WebConfig.isHttpCache();
             router = WebConfig.getRouter();
             bypassRequestUrls = WebConfig.getBypassRequestUrls();
+            corsRequestProcessor = WebConfig.getCORSRequestProcessor();
             resultHandlerResolver = WebConfig.getResultHandlerResolver();
             fileUploadResolver = WebConfig.getFileUploadResolver();
             exceptionHandler = WebConfig.getExceptionHandler();
@@ -76,6 +78,7 @@ public final class DispatcherFilter implements Filter {
             log.info("web.upload.dir = {}", WebConfig.getUploaddir());
             log.info("web.urls.router = {}", router.getClass().getName());
             log.info("web.urls.bypass = {}", (bypassRequestUrls == null) ? null : bypassRequestUrls.getClass().getName());
+            log.info("web.urls.cors = {}", (corsRequestProcessor == null) ? null : corsRequestProcessor.getClass().getName());
 
             for (Plugin plugin : WebConfig.getPlugins()) {
                 log.info("load plugin: {}", plugin.getClass().getName());
@@ -118,6 +121,15 @@ public final class DispatcherFilter implements Filter {
         }
 
         HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
+
+        if (corsRequestProcessor != null) {
+            corsRequestProcessor.setHeaders(request, response);
+            if (httpMethod == HttpMethod.OPTIONS) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
+            }
+        }
+
         RouteInfo route = router.lookup(request, path, httpMethod);
         request = fileUploadResolver.transform(request);
         RequestContext ctx = new RequestContext(request, response, path, httpMethod, route);
