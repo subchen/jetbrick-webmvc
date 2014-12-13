@@ -54,6 +54,9 @@ public final class CommonsFileUpload implements FileUpload {
                         req.setParameter(fieldName, Streams.asString(stream, encoding));
                     } else {
                         String originalFilename = item.getName();
+                        if (originalFilename == null || originalFilename.length() == 0) {
+                            continue;
+                        }
                         File diskFile = UploadUtils.getUniqueTemporaryFile(originalFilename);
                         OutputStream fos = new FileOutputStream(diskFile);
 
