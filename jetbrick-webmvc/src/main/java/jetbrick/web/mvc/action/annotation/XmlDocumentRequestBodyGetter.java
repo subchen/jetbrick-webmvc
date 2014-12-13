@@ -19,14 +19,12 @@
  */
 package jetbrick.web.mvc.action.annotation;
 
-import java.io.StringReader;
 import javax.xml.parsers.*;
 import jetbrick.bean.ParameterInfo;
 import jetbrick.web.mvc.RequestContext;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
-public final class JAXPDocumentRequestParamGetter implements RequestParamGetter<Document> {
+public final class XmlDocumentRequestBodyGetter implements RequestBodyGetter<Document> {
     private static final DocumentBuilder builder;
 
     static {
@@ -38,13 +36,7 @@ public final class JAXPDocumentRequestParamGetter implements RequestParamGetter<
     }
 
     @Override
-    public Document get(RequestContext ctx, ParameterInfo parameter, String name) throws Exception {
-        String xml = ctx.getParameter(name);
-        if (xml == null || xml.length() == 0) {
-            return null;
-        }
-
-        InputSource is = new InputSource(new StringReader(xml));
-        return builder.parse(is);
+    public Document get(RequestContext ctx, ParameterInfo parameter) throws Exception {
+        return builder.parse(ctx.getRequest().getInputStream());
     }
 }

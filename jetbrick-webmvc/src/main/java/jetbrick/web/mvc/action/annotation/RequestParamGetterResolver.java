@@ -35,7 +35,7 @@ public final class RequestParamGetterResolver {
 
     public void initialize() {
         register(FilePart.class, FilePartRequestParamGetter.class);
-        register(Document.class, JAXPDocumentRequestParamGetter.class);
+        register(Document.class, XmlDocumentRequestParamGetter.class);
         register(JAXBElement.class, JAXBElementRequestParamGetter.class);
     }
 

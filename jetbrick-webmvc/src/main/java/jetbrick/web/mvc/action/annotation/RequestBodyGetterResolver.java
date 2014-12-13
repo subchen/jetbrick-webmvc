@@ -33,7 +33,7 @@ public final class RequestBodyGetterResolver {
     private final Map<Class<?>, RequestBodyGetter<?>> getters = new IdentityHashMap<Class<?>, RequestBodyGetter<?>>();
 
     public void initialize() {
-        register(Document.class, JAXPDocumentRequestBodyGetter.class);
+        register(Document.class, XmlDocumentRequestBodyGetter.class);
         register(JAXBElement.class, JAXBElementRequestBodyGetter.class);
     }
 
