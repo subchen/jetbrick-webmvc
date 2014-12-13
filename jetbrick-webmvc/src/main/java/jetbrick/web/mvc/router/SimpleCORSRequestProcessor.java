@@ -28,9 +28,9 @@ import jetbrick.web.mvc.CORSRequestProcessor;
  */
 public final class SimpleCORSRequestProcessor implements CORSRequestProcessor {
     private String allowOrigin = "*";
-    private String allowMethods = "POST, GET, DELETE, OPTIONS";
+    private String allowMethods = "GET, POST, DELETE, OPTIONS";
     private String maxAge = "3600";
-    private String allowHeaders = "x-requested-with";
+    private String allowHeaders = "X-Requested-With";
     private boolean allowCredentials = false;
 
     public void setAllowOrigin(String allowOrigin) {
@@ -64,5 +64,4 @@ public final class SimpleCORSRequestProcessor implements CORSRequestProcessor {
             response.setHeader("Access-Control-Allow-Credentials", "true");
         }
     }
-
 }
