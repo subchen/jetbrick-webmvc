@@ -30,7 +30,6 @@ import jetbrick.web.mvc.RequestContext;
  *
  * @author Guoqiang Chen
  */
-
 public final class RawDownloadResultHandler implements ResultHandler<RawDownload> {
 
     @Override

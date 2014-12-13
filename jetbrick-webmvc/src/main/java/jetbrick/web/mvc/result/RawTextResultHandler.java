@@ -29,7 +29,6 @@ import jetbrick.web.mvc.RequestContext;
  *
  * @author Guoqiang Chen
  */
-
 public final class RawTextResultHandler implements ResultHandler<RawText> {
 
     @Override

@@ -28,7 +28,7 @@ public final class ObjectResultHandler implements ResultHandler<Object> {
         if (result != null) {
             Class<?> resultClass = result.getClass();
             if (resultClass == Object.class) {
-                throw new IllegalStateException("Invalid result class.");
+                throw new IllegalStateException("Invalid result class: Object.class");
             }
 
             ResultHandlerResolver resolver = WebConfig.getResultHandlerResolver();
