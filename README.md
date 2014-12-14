@@ -95,7 +95,7 @@ Downloads
 Samples
 ---------------------------
 
-https://github.com/subchen/jetbrick-template-2x-samples
+https://github.com/subchen/jetbrick-webmvc-samples
 
 
 License
