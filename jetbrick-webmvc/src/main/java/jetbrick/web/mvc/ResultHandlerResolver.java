@@ -26,6 +26,7 @@ import jetbrick.util.Validate;
 import jetbrick.web.mvc.result.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 /**
  * 全局 ResultHandler 管理器
@@ -42,6 +43,7 @@ public final class ResultHandlerResolver {
         register(RawText.class, RawTextResultHandler.class);
         register(RawData.class, RawDataResultHandler.class);
         register(RawDownload.class, RawDownloadResultHandler.class);
+        register(Document.class, XmlDocumentResultHandler.class);
     }
 
     public void register(Class<?> resultClass, Class<?> resultHandlerClass) {
