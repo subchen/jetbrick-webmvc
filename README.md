@@ -92,6 +92,12 @@ Downloads
 [24]: http://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar
 
 
+Samples
+---------------------------
+
+https://github.com/subchen/jetbrick-template-2x-samples
+
+
 License
 ---------------------------
 
