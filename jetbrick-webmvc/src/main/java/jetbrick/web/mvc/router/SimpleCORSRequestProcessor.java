@@ -28,9 +28,9 @@ import jetbrick.web.mvc.CORSRequestProcessor;
  */
 public final class SimpleCORSRequestProcessor implements CORSRequestProcessor {
     private String allowOrigin = "*";
-    private String allowMethods = "GET, POST, DELETE, OPTIONS";
+    private String allowHeaders = null;
+    private String allowMethods = null;
     private String maxAge = "3600";
-    private String allowHeaders = "X-Requested-With";
     private boolean allowCredentials = false;
 
     public void setAllowOrigin(String allowOrigin) {
@@ -41,12 +41,12 @@ public final class SimpleCORSRequestProcessor implements CORSRequestProcessor {
         this.allowMethods = allowMethods;
     }
 
-    public void setMaxAge(String maxAge) {
-        this.maxAge = maxAge;
-    }
-
     public void setAllowHeaders(String allowHeaders) {
         this.allowHeaders = allowHeaders;
+    }
+
+    public void setMaxAge(String maxAge) {
+        this.maxAge = maxAge;
     }
 
     public void setAllowCredentials(boolean allowCredentials) {
@@ -56,7 +56,16 @@ public final class SimpleCORSRequestProcessor implements CORSRequestProcessor {
     @Override
     public void setHeaders(HttpServletRequest request, HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", allowOrigin);
+
+        if (allowMethods == null) {
+            allowMethods = request.getHeader("Access-Control-Request-Method");
+        }
         response.setHeader("Access-Control-Allow-Methods", allowMethods);
+
+        if (allowHeaders == null) {
+            allowHeaders = request.getHeader("Access-Control-Request-Headers");
+        }
+
         response.setHeader("Access-Control-Max-Age", maxAge);
         response.setHeader("Access-Control-Allow-Headers", allowHeaders);
 
