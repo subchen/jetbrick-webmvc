@@ -27,10 +27,6 @@ public final class FilePartArgumentGetter implements TypedArgumentGetter<FilePar
 
     @Override
     public FilePart get(RequestContext ctx) {
-        FilePart part = ctx.getFilePart();
-        if (part == null && IocConstants.REQUIRED) {
-            throw new IllegalStateException();
-        }
-        return part;
+        return ctx.getFilePart();
     }
 }
