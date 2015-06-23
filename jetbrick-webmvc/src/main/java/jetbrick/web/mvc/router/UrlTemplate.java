@@ -36,7 +36,7 @@ public final class UrlTemplate {
 
         String[] urlSegments = StringUtils.split(url.substring(1), '/');
         this.matchers = new UrlSegmentMatcher[urlSegments.length];
-        for (int i = 1; i < urlSegments.length; i++) {
+        for (int i = 0; i < urlSegments.length; i++) {
             matchers[i] = UrlSegmentMatcher.create(urlSegments[i]);
         }
     }
@@ -49,7 +49,7 @@ public final class UrlTemplate {
     public boolean match(String[] urlSegments, PathVariables pathVariables) {
         Validate.isTrue(urlSegments.length == matchers.length);
 
-        for (int i = 1; i < matchers.length; i++) {
+        for (int i = 0; i < matchers.length; i++) {
             if (!matchers[i].match(urlSegments[i], pathVariables)) {
                 pathVariables.clear(); // 注意：不匹配的情况下，需要清除此次匹配的内容
                 return false;
